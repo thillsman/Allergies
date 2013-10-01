@@ -168,6 +168,7 @@
         </action>
         <action name="sendscan">
 			<sync>
+				<create class="scanwait" target="SCANBODY"/>
 				<assign property="var:upc" value="[object:CAMERA.scanvalue]"/>
 				<assign property="datasource:food-upc-request.source" value="[template:food-by-upc-url.content]"/>
 			</sync>
