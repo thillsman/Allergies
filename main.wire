@@ -97,7 +97,7 @@
 			<panel name="search" alias="SEARCH" width="100%" height="100%">
 				<panel name="searchhead" width="100%" height="64" background="333333">
 					<panel name="searchtitle" width="100%" height="44" valign="bottom">
-						<textfield name="title" width="80%" height="100%" align="center" color="333333" background="eeeeee" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" placeholder="Search"></text>
+						<textfield name="title" width="80%" height="100%" align="center" color="333333" background="eeeeee" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" placeholder="Search"></textfield>
 						<image name="close" source="images/icon.close.png" width="44" height="44" align="right" onclickup="showscanner"></image>
 						<image name="searchicon" source="images/icon.search.png" width="44" height="44" align="left"></image>
 					</panel>
