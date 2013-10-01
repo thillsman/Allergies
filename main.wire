@@ -13,6 +13,12 @@
 		</platform>
 	</styles>
 	<classes>
+		<class name="allergyboxclass">
+			<panel name="[param:n]" xpos="[param:x]" ypos="[param:y]" style="allergyboxstyle" onclickup="[param:action]" _actiondata="[param:actiondata]">
+				<image name="img" source="[param:img]" width="80" height="80" align="center" valign="center"></image>
+				<text name="text" width="100%" height="20%" color="333333" font="HelveticaNeue-Light" size="14" alignment="center" valignment="center" valign="bottom" text="[param:allergy]" ></text>
+			</panel>
+		</class>
 		<class name="allergypicker">
 			<panel name="allergypicker" alias="ALLERGYPICKER" width="100%" height="100%">
 				<panel name="allergypickhead" width="100%" height="64" background="333333">
@@ -48,12 +54,6 @@
 				</panel>
 			</panel>
 		</class>
-		<class name="allergyboxclass">
-			<panel name="[param:n]" xpos="[param:x]" ypos="[param:y]" style="allergyboxstyle" onclickup="[param:action]" _actiondata="[param:actiondata]">
-				<image name="img" source="[param:img]" width="80" height="80" align="center" valign="center"></image>
-				<text name="text" width="100%" height="20%" color="333333" font="HelveticaNeue-Light" size="14" alignment="center" valignment="center" valign="bottom" text="[param:allergy]" ></text>
-			</panel>
-		</class>
 		<class name="scanner">
 			<panel name="scanner" alias="SCANNER" width="100%" height="100%">
 				<panel name="scannerhead" width="100%" height="64" background="333333">
@@ -73,6 +73,33 @@
 				<panel name="line" style="hdivider" background="eeeeee"></panel>
 				<wait name="wait" width="100%" height="100%" color="eeeeee"></wait>
 				<text name="text" width="100%" height="30" color="eeeeee" font="HelveticaNeue-Light" size="18" alignment="center" text="Retrieving product data..." ypos="55%"></text>
+			</panel>
+		</class>
+		<class name="profile">
+			<panel name="profile" alias="PROFILE" width="100%" height="100%">
+				<panel name="profilehead" width="100%" height="64" background="333333">
+					<panel name="profiletitle" width="100%" height="44" valign="bottom">
+						<text name="title" width="80%" height="100%" align="center" color="eeeeee" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="Hacking Allergies"></text>
+						<image name="search" url="http://placehold.it/44x44" width="44" height="44" align="right" onclickup="showscanner"></image>
+					</panel>
+				</panel>
+				<panel name="profilebody" alias="PROFILEBODY" width="100%" height="504" valign="bottom" background="eeeeee">
+					
+				</panel>
+			</panel>
+		</class>
+		<class name="search">
+			<panel name="search" alias="SEARCH" width="100%" height="100%">
+				<panel name="searchhead" width="100%" height="64" background="333333">
+					<panel name="searchtitle" width="100%" height="44" valign="bottom">
+						<textfield name="title" width="80%" height="100%" align="center" color="333333" background="eeeeee" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" placeholder="Search"></text>
+						<image name="close" url="http://placehold.it/44x44" width="44" height="44" align="right" onclickup="showscanner"></image>
+						<image name="searchicon" url="http://placehold.it/44x44" width="44" height="44" align="left"></image>
+					</panel>
+				</panel>
+				<panel name="searchbody" alias="SEARCHBODY" width="100%" height="504" valign="bottom" background="eeeeee">
+					
+				</panel>
 			</panel>
 		</class>
 	</classes>
@@ -105,13 +132,19 @@
 		<action name="showscanner">
 			<create class="scanner" target="BG"/>
 			<delete target="ALLERGYPICKER"/>
+			<delete target="PROFILE"/>
 		</action>
 		<action name="sendscan">
 			<create class="scanwait" target="SCANBODY"/>
 			<!-- <alert message="[object:SCANCAM.scanvalue]" /> -->
 		</action>
 		<action name="showprofile">
-			
+			<create class="profile" target="BG"/>
+			<delete target="SCANNER"/>
+		</action>
+		<action name="showsearch">
+			<create class="search" target="BG"/>
+			<delete target="SCANNER"/>
 		</action>
 		<action name="null" ></action>
 	</actions>
