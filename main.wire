@@ -24,7 +24,7 @@
 				<panel name="allergypickhead" width="100%" height="64" background="333333">
 					<panel name="allergypicktitle" width="100%" height="44" valign="bottom">
 						<text name="title" width="80%" height="100%" align="center" color="eeeeee" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="Hacking Allergies"></text>
-						<image name="nextscreen" url="http://placehold.it/44x44" width="44" height="44" align="right" onclickup="showscanner"></image>
+						<image name="nextscreen" source="images/icon.search.png" width="44" height="44" align="right" onclickup="showscanner"></image>
 					</panel>
 				</panel>
 				<panel name="allergyoptions" alias="ALLERGYOPTIONS" width="200%" height="504" valign="bottom" background="eeeeee">
@@ -59,8 +59,8 @@
 				<panel name="scannerhead" width="100%" height="64" background="333333">
 					<panel name="scannertitle" width="100%" height="44" valign="bottom">
 						<text name="title" width="80%" height="100%" align="center" color="eeeeee" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="Hacking Allergies"></text>
-						<image name="search" url="http://placehold.it/44x44" width="44" height="44" align="right" onclickup="showsearch"></image>
-						<image name="profile" url="http://placehold.it/44x44" width="44" height="44" align="left" onclickup="showprofile"></image>
+						<image name="search" source="images/icon.search.png" width="44" height="44" align="right" onclickup="showsearch"></image>
+						<image name="profile" source="images/icon.user.png" width="44" height="44" align="left" onclickup="showprofile"></image>
 					</panel>
 				</panel>
 				<panel name="scanbody" alias="SCANBODY" width="100%" height="504" valign="bottom">
@@ -80,7 +80,7 @@
 				<panel name="profilehead" width="100%" height="64" background="333333">
 					<panel name="profiletitle" width="100%" height="44" valign="bottom">
 						<text name="title" width="80%" height="100%" align="center" color="eeeeee" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="Hacking Allergies"></text>
-						<image name="search" url="http://placehold.it/44x44" width="44" height="44" align="right" onclickup="showscanner"></image>
+						<image name="scan" url="http://placehold.it/44x44" width="44" height="44" align="right" onclickup="showscanner"></image>
 					</panel>
 				</panel>
 				<panel name="profilebody" alias="PROFILEBODY" width="100%" height="504" valign="bottom" background="eeeeee">
@@ -93,8 +93,8 @@
 				<panel name="searchhead" width="100%" height="64" background="333333">
 					<panel name="searchtitle" width="100%" height="44" valign="bottom">
 						<textfield name="title" width="80%" height="100%" align="center" color="333333" background="eeeeee" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" placeholder="Search"></text>
-						<image name="close" url="http://placehold.it/44x44" width="44" height="44" align="right" onclickup="showscanner"></image>
-						<image name="searchicon" url="http://placehold.it/44x44" width="44" height="44" align="left"></image>
+						<image name="close" source="images/icon.close.png" width="44" height="44" align="right" onclickup="showscanner"></image>
+						<image name="searchicon" source="images/icon.search.png" width="44" height="44" align="left"></image>
 					</panel>
 				</panel>
 				<panel name="searchbody" alias="SEARCHBODY" width="100%" height="504" valign="bottom" background="eeeeee">
