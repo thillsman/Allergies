@@ -1,0 +1,71 @@
+<wire>
+    <datasources>
+        <datasource name="food-createsession" source="" query="/" providertype="json" querycomplete="create-session"/>
+        <datasource name="food-upc-request" source="" query="/" providertype="json" querycomplete="upc-found"/>
+
+
+        <texttemplate name="food-session-url"><![CDATA[http://api.foodessentials.com/createsession?uid=[var:uid]&devid=[var:devid]&appid=[var:appid]&f=json&api_key=[var:api_key]]]></texttemplate>
+        
+        <texttemplate name="food-by-upc-url"><![CDATA[http://api.foodessentials.com/labelarray?u=[var:upc]&sid=[var:session]&n=1&s=0&f=json&api_key=[var:api_key]&v=2.0]]></texttemplate>
+        
+        
+        <!--
+         
+         http://api.foodessentials.com/labelarray?u=[var:upc]&sid=[var:session]&n=1&s=0&f=json&api_key=[var:api_key]
+         
+        http://api.foodessentials.com/productscore?u=722252101303&sid=c3d43c11-d0e5-48ae-8405-557e627c93d3&f=json&api_key=e6aeb7mcqbg4pduc8qr637d6
+        -->
+        
+        
+    </datasources>
+    <classes>
+        <class name="camera">
+            <camera name="camera" alias="CAMERA"  height="[param:h]" width="[param:w]" align="center" valign="top" type="barcodescan" onscan="barcode-found" onscantarget="CONTENT">
+                <panel name="target" width="200" height="200" align="center" valign="center" borderwidth="2" bordercolor="#b4ae0e" ignorestouches="yes"></panel>
+                <panel name="lightBTN" ypos="2%" xpos="2%" height="40" width="40" onclickup="activate-light">
+                    <image name="icon" source="graphics/icon.light-off.png"></image>
+                </panel>
+            </camera>
+            </class>
+    </classes>
+    <main>
+        <panel name="bg" alias="TARGET" width="100%" height="100%">
+          <object class="camera" h="90%" w="90%"/>
+        </panel>
+    </main>
+    <actions>
+        <action name="oninit" oninit="yes">
+            <sync>
+                 <assign property="var:uid" value="demoUID_01"/>
+                 <assign property="var:devid" value="demoDev_01"/>
+                 <assign property="var:appid" value="demoApp_01"/>
+                 <assign property="var:api_key" value="e6aeb7mcqbg4pduc8qr637d6"/>
+                 <alert message="[template:food-session-url.content]"/>
+                 <assign property="datasource:food-createsession.source" value="[template:food-session-url.content]"/>
+            </sync>
+        </action>
+        <action name="create-session">
+                            <alert message="[datasource:food-createsession.0.content]"/>
+            <if lhs="[datasource:food-createsession.1.session_id]" operator="ne" rhs="">
+                  <assign property="var:session" value="[datasource:food-createsession.1.session_id]"/>
+                  <else>
+                        <alert message="Unable to obtain api session."/>
+                  </else>
+            </if>
+        </action>
+        
+        <action name="barcode-found">
+
+                <sync>
+                    <assign property="var:upc" value="[object:CAMERA.scanvalue]"/>
+                    <alert message="[template:food-by-upc-url.content]"/>
+                    <assign property="datasource:food-upc-request.source" value="[template:food-by-upc-url.content]"/>
+                </sync>
+        </action>
+        
+        <action name="upc-found">
+            <alert message="[datasource:food-upc-request.1.productsArray[0]/allergens]"/>
+        </action>
+        
+    </actions>
+</wire>
