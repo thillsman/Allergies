@@ -1,0 +1,118 @@
+<wire>
+	<datasources>
+	</datasources>
+	<styles>
+		<style name="allergyboxstyle" width="25%" height="25%" background="eeeeee"/>
+		<style name="vdivider" width="1" height="100%" background="333333"/>
+		<style name="hdivider" width="100%" height="1" background="333333"/>
+		<platform device="iphone5|iphone5S|iphone5C">
+			<style name="allergyoptionsstyle" width="200%" height="416" valign="bottom" background="eeeeee"/>
+		</platform>
+		<platform device="iphone4|iphone3|iphone1">
+			<style name="allergyoptionsstyle" width="200%" height="504" valign="bottom" background="eeeeee"/>
+		</platform>
+	</styles>
+	<classes>
+		<class name="allergypicker">
+			<panel name="allergypicker" alias="ALLERGYPICKER" width="100%" height="100%">
+				<panel name="allergypickhead" width="100%" height="64" background="333333">
+					<panel name="allergypicktitle" width="100%" height="44" valign="bottom">
+						<text name="title" width="80%" height="100%" align="center" color="eeeeee" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="Hacking Allergies"></text>
+						<image name="nextscreen" url="http://placehold.it/44x44" width="44" height="44" align="right" onclickup="showscanner"></image>
+					</panel>
+				</panel>
+				<panel name="allergyoptions" alias="ALLERGYOPTIONS" width="200%" height="504" valign="bottom" background="eeeeee">
+					<object class="allergyboxclass" n="Cereals" x="0%" y="0%" img="x.png" allergy="Cereals" action="saveallergy" actiondata="cereals"/>
+					<object class="allergyboxclass" n="Coconut" x="25%" y="0%" img="x.png" allergy="Coconut" action="saveallergy" actiondata="coconut"/>
+					<object class="allergyboxclass" n="Corn" x="0%" y="25%" img="x.png" allergy="Corn" action="saveallergy" actiondata="corn"/>
+					<object class="allergyboxclass" n="Egg" x="25%" y="25%" img="x.png" allergy="Egg" action="saveallergy" actiondata="egg"/>
+					<object class="allergyboxclass" n="Fish" x="0%" y="50%" img="x.png" allergy="Fish" action="saveallergy" actiondata="fish"/>
+					<object class="allergyboxclass" n="Gluten" x="25%" y="50%" img="x.png" allergy="Gluten" action="saveallergy" actiondata="gluten"/>
+					<object class="allergyboxclass" n="Milk" x="0%" y="75%" img="x.png" allergy="Milk" action="saveallergy" actiondata="milk"/>
+					<object class="allergyboxclass" n="forward" x="25%" y="75%" img="x.png" allergy="More" action="slideallergies" actiondata="-100%"/>
+					<object class="allergyboxclass" n="Peanuts" x="50%" y="0%" img="x.png" allergy="Peanuts" action="saveallergy" actiondata="peanuts"/>
+					<object class="allergyboxclass" n="Sesame seeds" x="75%" y="0%" img="x.png" allergy="Sesame seeds" action="saveallergy" actiondata="sesameseeds"/>
+					<object class="allergyboxclass" n="Shellfish" x="50%" y="25%" img="x.png" allergy="Shellfish" action="saveallergy" actiondata="shellfish"/>
+					<object class="allergyboxclass" n="Soybean" x="75%" y="25%" img="x.png" allergy="Soybean" action="saveallergy" actiondata="soybean"/>
+					<object class="allergyboxclass" n="Sulfites" x="50%" y="50%" img="x.png" allergy="Sulfites" action="saveallergy" actiondata="sulfites"/>
+					<object class="allergyboxclass" n="Tree nuts" x="75%" y="50%" img="x.png" allergy="Tree nuts" action="saveallergy" actiondata="treenuts"/>
+					<object class="allergyboxclass" n="backward" x="50%" y="75%" img="x.png" allergy="More" action="slideallergies" actiondata="0%"/>
+					<object class="allergyboxclass" n="Wheat" x="75%" y="75%" img="x.png" allergy="Wheat" action="saveallergy" actiondata="wheat"/>
+
+					<panel name="divider1" style="vdivider" xpos="25%"></panel>
+					<panel name="divider2" style="vdivider" xpos="50%"></panel>
+					<panel name="divider3" style="vdivider" xpos="75%"></panel>
+					<panel name="divider4" style="hdivider" ypos="25%"></panel>
+					<panel name="divider5" style="hdivider" ypos="50%"></panel>
+					<panel name="divider6" style="hdivider" ypos="75%"></panel>
+				</panel>
+			</panel>
+		</class>
+		<class name="allergyboxclass">
+			<panel name="[param:n]" xpos="[param:x]" ypos="[param:y]" style="allergyboxstyle" onclickup="[param:action]" _actiondata="[param:actiondata]">
+				<image name="img" source="[param:img]" width="80" height="80" align="center" valign="center"></image>
+				<text name="text" width="100%" height="20%" color="333333" font="HelveticaNeue-Light" size="14" alignment="center" valignment="center" valign="bottom" text="[param:allergy]" ></text>
+			</panel>
+		</class>
+		<class name="scanner">
+			<panel name="scanner" alias="SCANNER" width="100%" height="100%">
+				<panel name="scannerhead" width="100%" height="64" background="333333">
+					<panel name="scannertitle" width="100%" height="44" valign="bottom">
+						<text name="title" width="80%" height="100%" align="center" color="eeeeee" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="Hacking Allergies"></text>
+						<image name="search" url="http://placehold.it/44x44" width="44" height="44" align="right" onclickup="showsearch"></image>
+						<image name="profile" url="http://placehold.it/44x44" width="44" height="44" align="left" onclickup="showprofile"></image>
+					</panel>
+				</panel>
+				<panel name="scanbody" alias="SCANBODY" width="100%" height="504" valign="bottom">
+					<camera name="scancam" alias="SCANCAM" height="100%" width="100%" type="barcodescan" face="back" onscan="sendscan"></camera>
+				</panel>
+			</panel>
+		</class>
+		<class name="scanwait">
+			<panel name="scanwait" width="100%" height="100%" background="333333">
+				<panel name="line" style="hdivider" background="eeeeee"></panel>
+				<wait name="wait" width="100%" height="100%" color="eeeeee"></wait>
+				<text name="text" width="100%" height="30" color="eeeeee" font="HelveticaNeue-Light" size="18" alignment="center" text="Retrieving product data..." ypos="55%"></text>
+			</panel>
+		</class>
+	</classes>
+	<main>
+		<panel name="bg" alias="BG" width="100%" height="100%"></panel>
+	</main>
+	<actions>
+		<action name="oninit" oninit="yes">
+			<if lhs="[preferences:alreadyopened]" operator="ne" rhs="yes">
+				<create class="allergypicker" target="BG"/>
+			</if>
+			<if lhs="[preferences:alreadyopened]" operator="e" rhs="yes">
+				<create class="scanner" target="BG"/>
+			</if>
+		</action>
+		<action name="slideallergies">
+			<translate time=".2" curve="linear" target="ALLERGYOPTIONS" xpos="_actiondata"/>
+		</action>
+		<action name="saveallergy">
+			<sync>
+				<alert message="[object:name]" />
+				<if lhs="[preferences:[object:name]]" operator="e" rhs="1">
+					<assign property="preferences:[object:name]" value="" />
+					<else>
+						<assign property="preferences:[object:name]" value="1" />
+					</else>
+				</if>
+			</sync>
+		</action>
+		<action name="showscanner">
+			<create class="scanner" target="BG"/>
+			<delete target="ALLERGYPICKER"/>
+		</action>
+		<action name="sendscan">
+			<create class="scanwait" target="SCANBODY"/>
+			<!-- <alert message="[object:SCANCAM.scanvalue]" /> -->
+		</action>
+		<action name="showprofile">
+			
+		</action>
+		<action name="null" ></action>
+	</actions>
+</wire>
