@@ -1,5 +1,10 @@
 <wire>
 	<datasources>
+		<datasource name="food-createsession" source="" query="/" providertype="json" querycomplete="create-session"/>
+		<datasource name="food-upc-request" source="" query="/" providertype="json" querycomplete="upc-found"/>
+		<datasource name="food-allergy-list" source="" query="/" providertype="json" querycomplete="allergy-check"/>
+		<texttemplate name="food-session-url"><![CDATA[http://api.foodessentials.com/createsession?uid=[var:uid]&devid=[var:devid]&appid=[var:appid]&f=json&api_key=[var:api_key]]]></texttemplate>
+		<texttemplate name="food-by-upc-url"><![CDATA[http://api.foodessentials.com/labelarray?u=[var:upc]&sid=[var:session]&n=1&s=0&f=json&api_key=[var:api_key]&v=2.0]]></texttemplate>
 	</datasources>
 	<styles>
 		<style name="allergyboxstyle" width="25%" height="100%"/>
@@ -62,8 +67,8 @@
 				<panel name="scannerhead" width="100%" height="64" background="333333">
 					<panel name="scannertitle" width="100%" height="44" valign="bottom">
 						<text name="title" width="80%" height="100%" align="center" color="eeeeee" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="Hacking Allergies"></text>
-						<image name="search" url="http://placehold.it/44x44" width="44" height="44" align="right" onclickup="showsearch"></image>
-						<image name="profile" url="http://placehold.it/44x44" width="44" height="44" align="left" onclickup="showprofile"></image>
+						<image name="search" source="images/icon.search.png" width="44" height="44" align="right" onclickup="showsearch"></image>
+						<image name="profile" source="images/icon.user.png" width="44" height="44" align="left" onclickup="showprofile"></image>
 					</panel>
 				</panel>
 				<panel name="scanbody" alias="SCANBODY" width="100%" height="504" valign="bottom">
@@ -83,7 +88,7 @@
 				<panel name="profilehead" width="100%" height="64" background="333333">
 					<panel name="profiletitle" width="100%" height="44" valign="bottom">
 						<text name="title" width="80%" height="100%" align="center" color="eeeeee" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="Hacking Allergies"></text>
-						<image name="search" url="http://placehold.it/44x44" width="44" height="44" align="right" onclickup="showscanner"></image>
+						<image name="scan" url="http://placehold.it/44x44" width="44" height="44" align="right" onclickup="showscanner"></image>
 					</panel>
 				</panel>
 				<panel name="profilebody" alias="PROFILEBODY" width="100%" height="504" valign="bottom" background="eeeeee">
@@ -96,8 +101,8 @@
 				<panel name="searchhead" width="100%" height="64" background="333333">
 					<panel name="searchtitle" width="100%" height="44" valign="bottom">
 						<textfield name="title" width="80%" height="100%" align="center" color="333333" background="eeeeee" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" placeholder="Search"></textfield>
-						<image name="close" url="http://placehold.it/44x44" width="44" height="44" align="right" onclickup="showscanner"></image>
-						<image name="searchicon" url="http://placehold.it/44x44" width="44" height="44" align="left"></image>
+						<image name="close" source="images/icon.close.png" width="44" height="44" align="right" onclickup="showscanner"></image>
+						<image name="searchicon" source="images/icon.search.png" width="44" height="44" align="left"></image>
 					</panel>
 				</panel>
 				<panel name="searchbody" alias="SEARCHBODY" width="100%" height="504" valign="bottom" background="eeeeee">
@@ -117,6 +122,13 @@
 			<if lhs="[preferences:alreadyopened]" operator="e" rhs="yes">
 				<create class="scanner" target="BG"/>
 			</if>
+			<sync>
+				<assign property="var:uid" value="demoUID_01"/>
+				<assign property="var:devid" value="demoDev_01"/>
+				<assign property="var:appid" value="demoApp_01"/>
+				<assign property="var:api_key" value="e6aeb7mcqbg4pduc8qr637d6"/>
+				<assign property="datasource:food-createsession.source" value="[template:food-session-url.content]"/>
+			</sync>
 		</action>
 		<action name="slideallergies">
 			<translate time=".2" curve="linear" target="ALLERGYOPTIONS" xpos="_actiondata"/>
@@ -137,10 +149,10 @@
 			<delete target="ALLERGYPICKER"/>
 			<delete target="PROFILE"/>
 		</action>
-		<action name="sendscan">
+		<!-- <action name="sendscan">
 			<create class="scanwait" target="SCANBODY"/>
-			<!-- <alert message="[object:SCANCAM.scanvalue]" /> -->
-		</action>
+			<alert message="[object:SCANCAM.scanvalue]" />
+		</action> -->
 		<action name="showprofile">
 			<create class="profile" target="BG"/>
 			<delete target="SCANNER"/>
@@ -148,6 +160,33 @@
 		<action name="showsearch">
 			<create class="search" target="BG"/>
 			<delete target="SCANNER"/>
+		</action>
+		<action name="create-session">
+ 			<if lhs="[datasource:food-createsession.1.session_id]" operator="ne" rhs="">
+				<assign property="var:session" value="[datasource:food-createsession.1.session_id]"/>
+				<else>
+					<alert message="Unable to obtain api session."/>
+				</else>
+			</if>
+        </action>
+        <action name="sendscan">
+			<sync>
+				<create class="scanwait" target="SCANBODY"/>
+				<assign property="var:upc" value="[object:CAMERA.scanvalue]"/>
+				<assign property="datasource:food-upc-request.source" value="[template:food-by-upc-url.content]"/>
+			</sync>
+        </action>
+        <action name="upc-found">
+            <assign property="datasource:food-allergy-list.data" value="[datasource:food-upc-request.1.productsArray[0]/allergens]"/>
+        </action>
+        <action name="allergy-check">
+			<sync>
+				<assign property="var:alCount" value="0"/>
+				<loop lhs="[datasource:food-allergy-list.dataSourceResultCount]" operator="gt" rhs="[var:alCount]">
+					<alert message="[datasource:food-allergy-list.[var:alCount].allergen_name] [datasource:food-allergy-list.[var:alCount].allergen_value]"/>
+					<assign property="var:alCount" value="[eval: [var:alCount] + 1 ]"/>
+				</loop>
+			</sync>
 		</action>
 		<action name="null" ></action>
 	</actions>
