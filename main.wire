@@ -462,9 +462,6 @@
 			</sync>
 			</if>
 		</action>
-		<action name="TYLER">
-			<create class="allergy-modal" target="MAIN" />
-		</action>
 		<action name="toggle-search">
 			<if lhs="[var:searching]" operator="!=" rhs="1">
 				<alpha value="0" time="0" target="TOOLBAR/wrapper/title" />
