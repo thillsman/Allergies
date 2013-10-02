@@ -92,8 +92,7 @@
 			</panel>
 		</class>
 		<class name="scanwait">
-			<panel name="scanwait" alias="SCANWAIT" width="100%" height="100%" background="333333">
-				<panel name="line" style="hdivider" background="eeeeee"></panel>
+			<panel name="scanwait" alias="SCANWAIT" width="100%" height="100%" background="20263c">
 				<wait name="wait" width="100%" height="100%" color="eeeeee"></wait>
 				<text name="text" width="100%" height="30" color="eeeeee" font="HelveticaNeue-Light" size="18" alignment="center" text="Retrieving product data..." ypos="55%"></text>
 			</panel>
@@ -129,9 +128,12 @@
 				<panel name="alert" alias="ALLERGY-MODAL-ALERT" width="100%" height="100%">
 					<panel name="toolbar" width="100%" height="44" background="457291">
 						<panel name="wrapper" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
-							<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="fit" maxsize="18" alignment="center" valignment="center" text="[param:name]"></text>
+							<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="18" alignment="center" valignment="center" text="PRODUCT NAME"></text>
 							<panel name="capture" width="66" height="100%" align="right" onclickup="toggle-ingredients">
 								<image name="icon" source="images/icon.look.png" align="right" valign="center" ignoretouches="yes"></image>
+							</panel>
+							<panel name="clear" width="66" height="100%" align="left" onclickup="clear-allergy-modal" alpha="1" clickuptarget="BG">
+								<image name="icon" source="images/icon.clear.png" align="left" valign="center"></image>
 							</panel>
 						</panel>
 					</panel>
@@ -250,14 +252,14 @@
 				<panel name="background" width="100%" height="100%" background="eeeeee"></panel>
 				<panel name="toolbar" alias="TOOLBAR" width="100%" height="64" background="232a46">
 					<panel name="wrapper" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
-						<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="APP NAME"></text>
+						<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="SafeEats"></text>
 						<panel name="search" width="66" height="100%" align="left" onclickup="toggle-search">
 							<image name="icon" source="images/icon.search.png" align="left" valign="center"></image>
 						</panel>
 						<panel name="profile" width="66" height="100%" align="right" onclickup="toggle-profile">
 							<image name="icon" source="images/icon.user.png" align="right" valign="center"></image>
 						</panel>
-						<textfield name="search-textfield" alias="SEARCH-TEXTFIELD" onreturnkeypressed="searchscan" width="80%" height="100%" align="center" font="HelveticaNeue-Light" size="18" color="ffffff" alignment="left" valignment="center" border="none" placeholder="UPC" alpha="0"></textfield>
+						<textfield name="search-textfield" alias="SEARCH-TEXTFIELD" width="80%" height="100%" align="center" font="HelveticaNeue-Light" size="18" color="ffffff" alignment="left" valignment="center" border="none" placeholder="UPC" alpha="0"></textfield>
 						<panel name="clear" width="66" height="100%" align="right" onclickup="toggle-search" alpha="0">
 							<image name="icon" source="images/icon.close.png" align="right" valign="center"></image>
 						</panel>
@@ -405,8 +407,6 @@
 			<sync>
 				<assign property="var:alCount" value="0"/>
 				<assign property="var:allergylevel" value="0" />
-				<assign property="var:productname" value="[js: &quot;[datasource:food-upc-request.1.productsArray[0]/product_name]&quot;.replace('\'',''); ]" />
-				<create class="allergy-modal" target="MAIN" name="[var:productname]"/>
 				<loop lhs="[datasource:food-allergy-list.dataSourceResultCount]" operator="gt" rhs="[var:alCount]">
 					<if lhs="[preferences:[datasource:food-allergy-list.[var:alCount].allergen_name]]" operator="e" rhs="1">
 						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_value]" operator="e" rhs="2">
@@ -429,8 +429,9 @@
 					<!-- <alert message="[datasource:food-allergy-list.[var:alCount].allergen_name] [datasource:food-allergy-list.[var:alCount].allergen_value]"/> -->
 					<assign property="var:alCount" value="[eval: [var:alCount] + 1 ]"/>
 				</loop>
-				<!-- <alert message="[js: &quot;[datasource:food-upc-request.1.productsArray[0]/product_name]&quot;.replace('\'',''); ]"/> -->
+				<assign property="var:productname" value="[datasource:food-upc-request.1.productsArray[0]/product_name]" />
 				<assign property="datasource:history-write.query" value="INSERT OR REPLACE INTO history (upc, name, shelf, allergylevel) VALUES ('[datasource:food-upc-request.1.productsArray[0]/upc]','[var:productname]','[datasource:food-upc-request.1.productsArray[0]/shelf]','[var:allergylevel]')" />
+				<create class="allergy-modal" target="MAIN" />
 			</sync> 
 		</action>
 		<action name="toggle-profile">
@@ -559,26 +560,14 @@
             </sync>
         </action>
         
+        <action name="clear-allergy-modal">
+        	<delete target="ALLERGY-MODAL" />
+        </action>
+
         <action name="mailsent">
             <alert title="Allergies Sent" message="A friendly message has been sent to [var:name]"/>
         </action>
 
 		<action name="null" ></action>
-
-        <action name="searchscan">
-        	<sync>
-                <assign property="var:upc" value="[object:SEARCH-TEXTFIELD.text]"/>
-                <assign property="datasource:food-upc-request.source" value="[template:food-by-upc-url.content]"/>
-                <if lhs="[var:upc]" operator="e" rhs="">
-                     <alert message="Product not found." />
-                     <delete target="SCANWAIT"/>
-                </if>
-                <keyboard visible="no" target="SEARCH-TEXTFIELD" />
-                <assign property="object:SEARCH-TEXTFIELD.text" value="" />
-                <play action="toggle-search" />
-            </sync>
-        </action>
 	</actions>
-
-
 </wire>
