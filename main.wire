@@ -1,6 +1,6 @@
-<wire>
+<wire> 
 	<datasources>
-		<datasource name="create-session" source="" query="/" providertype="json" querycomplete="create-session"/>
+		<datasource name="food-createsession" source="" query="/" providertype="json" querycomplete="create-session"/>
 		<datasource name="food-upc-request" source="" query="/" providertype="json" querycomplete="upc-found"/>
 		<datasource name="food-allergy-list" source="" query="/" providertype="json" querycomplete="allergy-check"/>
 		<texttemplate name="food-session-url"><![CDATA[http://api.foodessentials.com/createsession?uid=[var:uid]&devid=[var:devid]&appid=[var:appid]&f=json&api_key=[var:api_key]]]></texttemplate>
@@ -9,7 +9,7 @@
 	<styles>
 		<style name="allergyboxstyle" width="25%" height="100%"/>
 		<style name="vdivider" width="1" height="100%" background="333333"/>
-		<style name="hdivider" width="100%" height="1" background="333333"/>
+		<style name="hdivider" width="100%" height="1" background="333333"/> 
 		<style name="row-color" background="457291"  />
 		<platform device="iphone5|iphone5S|iphone5C">
 			<style name="allergyoptionsstyle" width="200%" height="416" valign="bottom" background="eeeeee"/>
@@ -28,34 +28,39 @@
 		<class name="allergypicker"> 
 			<panel name="allergypicker" width="100%" height="100%" alias="ALLERGYPICKER">
 				<panel name="curtain" width="100%" height="100%" background="#000000" alpha=".5" ></panel>
-				<panel name="container" alias="ALLERGYPICKER-CONTAINER" width="92%" height="95%" align="center" valign="center" background="658ea2" clip="yes" cornerradius="5">
-					<panel name="toolbar" width="100%" height="44" background="5d7a80">
+				<panel name="container" alias="ALLERGYPICKER-CONTAINER" width="92%" height="92%" align="center" valign="center" background="8ca0ab" clip="yes" cornerradius="5">
+					<panel name="toolbar" width="100%" height="44" background="457291">
 						<panel name="allergypicktitle" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
 							<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="My Allergies..."></text>
-							<image name="nextscreen" source="images/icon.search.png" align="right" valign="center" onclickup="showscanner"></image>
+							<panel name="capture" width="66" height="100%" align="right" onclickup="toggle-allergies">
+								<image name="icon" source="images/icon.forward.png" align="right" valign="center" ignoretouches="yes"></image>
+							</panel>
 						</panel>
 					</panel>
 					<panel name="allergyoptions" alias="ALLERGYOPTIONS" width="200%" height="[eval:[object:ALLERGYPICKER-CONTAINER.height] - 44]" valign="bottom">
 						<panel name="row-1" width="100%" height="25%">
-							<panel name="background" width="100%" height="100%" style="row-color" alpha="1"></panel>
+							<panel name="background" width="100%" height="100%" style="row-color" alpha=".85"></panel>
 							<object class="allergyboxclass" n="Cereals" x="0%" img="x.png" allergy="Cereals" action="saveallergy" actiondata="cereals"/>
 							<object class="allergyboxclass" n="Coconut" x="25%" img="x.png" allergy="Coconut" action="saveallergy" actiondata="coconut"/>
 							<object class="allergyboxclass" n="Peanuts" x="50%" img="x.png" allergy="Peanuts" action="saveallergy" actiondata="peanuts"/>
 							<object class="allergyboxclass" n="Sesame seeds" x="75%" img="x.png" allergy="Sesame seeds" action="saveallergy" actiondata="sesameseeds"/>
 						</panel>
-						<panel name="row-2" width="100%" height="25%" style="row-color" alpha=".975" bottomof="row-1">
+						<panel name="row-2" width="100%" height="25%" bottomof="row-1">
+							<panel name="background" width="100%" height="100%" style="row-color" alpha=".85"></panel>
 							<object class="allergyboxclass" n="Corn" x="0%" img="x.png" allergy="Corn" action="saveallergy" actiondata="corn"/>
 							<object class="allergyboxclass" n="Egg" x="25%" img="x.png" allergy="Egg" action="saveallergy" actiondata="egg"/>
 							<object class="allergyboxclass" n="Shellfish" x="50%" img="x.png" allergy="Shellfish" action="saveallergy" actiondata="shellfish"/>
 							<object class="allergyboxclass" n="Soybean" x="75%" img="x.png" allergy="Soybean" action="saveallergy" actiondata="soybean"/>
 						</panel>
-						<panel name="row-3" width="100%" height="25%" style="row-color" alpha=".95" bottomof="row-2">
+						<panel name="row-3" width="100%" height="25%" bottomof="row-2">
+							<panel name="background" width="100%" height="100%" style="row-color" alpha=".85"></panel>
 							<object class="allergyboxclass" n="Fish" x="0%" img="x.png" allergy="Fish" action="saveallergy" actiondata="fish"/>
 							<object class="allergyboxclass" n="Gluten" x="25%" img="x.png" allergy="Gluten" action="saveallergy" actiondata="gluten"/>
 							<object class="allergyboxclass" n="Sulfites" x="50%" img="x.png" allergy="Sulfites" action="saveallergy" actiondata="sulfites"/>
 							<object class="allergyboxclass" n="Tree nuts" x="75%" img="x.png" allergy="Tree nuts" action="saveallergy" actiondata="treenuts"/>
 						</panel>
-						<panel name="row-4" width="100%" height="25%" style="row-color" alpha=".925" bottomof="row-3">
+						<panel name="row-4" width="100%" height="25%" bottomof="row-3">
+							<panel name="background" width="100%" height="100%" style="row-color" alpha=".85"></panel>
 							<object class="allergyboxclass" n="Milk" x="0%" img="x.png" allergy="Milk" action="saveallergy" actiondata="milk"/>
 							<object class="allergyboxclass" n="forward" x="25%" img="x.png" allergy="More" action="slideallergies" actiondata="-100%"/>
 							<object class="allergyboxclass" n="backward" x="50%" img="x.png" allergy="More" action="slideallergies" actiondata="0%"/>
@@ -115,34 +120,97 @@
 		</class>
 	</classes>
 	<main>
-		<panel name="bg" alias="BG" width="100%" height="100%">
-			<panel name="toolbar" alias="TOOLBAR" width="100%" height="64" background="232a46">
-				<panel name="allergypicktitle" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
-					<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="APP NAME"></text>
-					<image name="nextscreen" source="images/icon.search.png" align="right" valign="center" onclickup="showscanner"></image>
-				</panel>
+		<panel name="main" alias="MAIN" width="100%" height="100%">
+			<image name="blur" source="images/blur.png" height="100%" width="100%"></image>
+			<!-- profile -->
+			<panel name="profile" alias="PROFILE" width="85%" height="100%" align="right" ypos="34" alpha="0">
+				<panel name="toolbar" width="80%" height="64" align="center">
+					<!-- <panel name="background" width="100%" height="100%" background="#ffffff" alpha=".05"></panel> -->
+					<panel name="wrapper" width="100%" height="44" valign="bottom">
+						<image name="return" source="images/icon.forward.white.png" align="left" valign="center" onclickup="toggle-profile"></image>
+						<image name="share" source="images/icon.share.png" align="right" valign="center"></image>
+					</panel>
+				</panel> 
+				<panel name="avatar" width="80" height="80" cornerradius="40" bordercolor="ffffff" background="#232a46" borderwidth="3" align="center" bottomof="toolbar" margin-top="20"></panel>
+				<text name="username" height="fit" width="100%" font="HelveticaNeue-Bold" size="22" alignment="center" color="ffffff" bottomof="avatar" margin-top="20" text="Truman Jones" />
+				<pager name="toc" width="90%" height="[eval: [object:PROFILE.height] - [object:PROFILE/avatar.height] - [object:PROFILE/username.height] - 20]" bottomof="username" margin-top="20" orientation="vertical" paginate="no" align="center">
+					<panel name="history" width="100%" height="15%">
+						<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="center" color="ffffff" text="Update Profile" />
+						<panel name="hr" width="90%" height="1" align="center" background="ffffff" alpha=".2" valign="bottom"></panel>
+					</panel>
+					<panel name="allergies" width="100%" height="15%" onclickup="toggle-allergies">
+						<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="center" color="ffffff" text="Edit Allergies" />
+						<panel name="hr" width="90%" height="1" align="center" background="ffffff" alpha=".2" valign="bottom"></panel>
+					</panel>
+					<panel name="history" width="100%" height="15%" onclick="prep-history" onclickup="toggle-history">
+						<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="center" color="ffffff" text="Scan History" />
+					</panel>
+				</pager>
 			</panel>
-			<panel name="body" alias="BODY" width="100%" height="[eval: [object:BG.height] - [object:TOOLBAR.height]" valign="bottom" background="00ff00"></panel>
+			<!-- history -->
+			<panel name="history" alias="HISTORY" width="100%" height="100%" xpos="100%" ypos="34" alpha="0">
+				<panel name="background" width="100%" height="100%" background="eeeeee"></panel>
+				<panel name="toolbar" width="100%" height="64" background="232a46">
+					<panel name="wrapper" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
+						<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="Scan History"></text>
+						<text name="back" width="65" height="100%" valign="center" color="aeb2b4" font="HelveticaNeue-Light" size="16" alignment="center" leftinset="14" text="Back" onclickup="toggle-history">
+		            		<image name="icon" source="images/icon.chevron.white.png" valign="center"></image>  
+		         		</text>
+					</panel>
+				</panel>
+				<panel name="body" width="100%" height="[eval: [object:BG.height] - [object:TOOLBAR.height]" valign="bottom" background="00ff00"></panel>
+			</panel>
+			<!-- home -->
+			<panel name="bg" alias="BG" width="100%" height="100%" shadowradius="5" shadowopacity=".7">
+				<panel name="background" width="100%" height="100%" background="eeeeee"></panel>
+				<panel name="toolbar" alias="TOOLBAR" width="100%" height="64" background="232a46">
+					<panel name="allergypicktitle" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
+						<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="APP NAME"></text>
+						<panel name="search" width="66" height="100%" align="left" onclickup="search">
+							<image name="icon" source="images/icon.search.png" align="left" valign="center"></image>
+						</panel>
+						<panel name="profile" width="66" height="100%" align="right" onclickup="toggle-profile">
+							<image name="icon" source="images/icon.user.png" align="right" valign="center"></image>
+						</panel>
+					</panel>
+				</panel>
+				<panel name="body" alias="BODY" width="100%" height="[eval: [object:BG.height] - [object:TOOLBAR.height]" valign="bottom" background="00ff00"></panel>
+			</panel>
+			
 		</panel>
 	</main>
 	<actions>
 		<action name="oninit" oninit="yes">
 			<if lhs="[preferences:alreadyopened]" operator="ne" rhs="yes">
-				<create class="allergypicker" target="BG"/>
+				<create class="allergypicker" target="MAIN"/>
+				<assign property="var:allergypicker" value="1" />
 			</if>
 			<if lhs="[preferences:alreadyopened]" operator="e" rhs="yes">
 				<create class="scanner" target="BG"/>
 			</if>
 			<sync>
-				<assign property="var:uid" value="demoUID_01"/> 
+				<assign property="var:uid" value="demoUID_01"/>
 				<assign property="var:devid" value="demoDev_01"/>
 				<assign property="var:appid" value="demoApp_01"/>
 				<assign property="var:api_key" value="e6aeb7mcqbg4pduc8qr637d6"/>
-				<assign property="datasource:create-session.source" value="[template:food-session-url.content]"/>
+				<assign property="datasource:food-createsession.source" value="[template:food-session-url.content]"/>
 			</sync>
 		</action>
 		<action name="slideallergies">
 			<translate time=".2" curve="linear" target="ALLERGYOPTIONS" xpos="_actiondata"/>
+		</action>
+		<action name="toggle-allergies">
+			<if lhs="[var:allergypicker]" operator="!=" rhs="1">
+				<alpha value=".5" time=".25" target="ALLERGYPICKER/curtain" />
+				<translate align="center" delay=".1" time=".25" target="ALLERGYPICKER" />
+				<assign property="var:allergypicker" value="1" />
+				<else>
+					<alpha value="0" time=".25" target="ALLERGYPICKER/curtain" />
+					<translate xpos="-100%" delay=".1" time=".25" target="ALLERGYPICKER" />
+					<assign property="var:allergypicker" value="0" />
+				</else>
+			</if>
+			
 		</action>
 		<action name="saveallergy">
 			<sync>
@@ -173,8 +241,8 @@
 			<delete target="SCANNER"/>
 		</action>
 		<action name="create-session">
- 			<if lhs="[datasource:create-session.1.session_id]" operator="ne" rhs="">
-				<assign property="var:session" value="[datasource:create-session.1.session_id]"/>
+ 			<if lhs="[datasource:food-createsession.1.session_id]" operator="ne" rhs="">
+				<assign property="var:session" value="[datasource:food-createsession.1.session_id]"/>
 				<else>
 					<alert message="Unable to obtain api session."/>
 				</else>
@@ -183,32 +251,54 @@
         <action name="sendscan">
 			<sync>
 				<create class="scanwait" target="SCANBODY"/>
-				<assign property="var:upc" value="[object:SCANCAM.scanvalue]"/>
+				<assign property="var:upc" value="[object:CAMERA.scanvalue]"/>
 				<assign property="datasource:food-upc-request.source" value="[template:food-by-upc-url.content]"/>
 			</sync>
         </action>
         <action name="upc-found">
             <assign property="datasource:food-allergy-list.data" value="[datasource:food-upc-request.1.productsArray[0]/allergens]"/>
-            <if lhs="[datasource:food-upc-request.0.content]" operator="e" rhs="">
-            	<alert message="Product not found." />
-            </if>
         </action>
         <action name="allergy-check">
 			<sync>
-				<assign property="var:alCount" value="1"/>
-				<loop lhs="[datasource:food-allergy-list.dataSourceResultCount]" operator="gte" rhs="[var:alCount]">
-					<!-- <alert message="[datasource:food-allergy-list.[var:alCount].allergen_name] [datasource:food-allergy-list.[var:alCount].allergen_value]"/> -->
-					<if lhs="[preferences:[datasource:food-allergy-list.[var:alCount].allergen_name]]" operator="e" rhs="1">
-						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_name]" operator="e" rhs="2">
-							<alert message="[datasource:food-allergy-list.[var:alCount].allergen_name] is present! Warning!" />
-						</if>
-						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_name]" operator="e" rhs="1">
-							<alert message="[datasource:food-allergy-list.[var:alCount].allergen_name] may be present." />
-						</if>
-					</if>
+				<assign property="var:alCount" value="0"/>
+				<loop lhs="[datasource:food-allergy-list.dataSourceResultCount]" operator="gt" rhs="[var:alCount]">
+					<alert message="[datasource:food-allergy-list.[var:alCount].allergen_name] [datasource:food-allergy-list.[var:alCount].allergen_value]"/>
 					<assign property="var:alCount" value="[eval: [var:alCount] + 1 ]"/>
 				</loop>
 			</sync>
+		</action>
+		<action name="toggle-profile">
+			<if lhs="[var:displayProfile]" operator="!=" rhs="1">
+				<translate xpos="-85%" ypos="34" time=".3" target="BG" />
+				<alpha value="1" time=".25" target="PROFILE" />
+				<assign property="var:displayProfile" value="1" />
+				<else>
+					<translate xpos="0" ypos="0" time=".3" target="BG" />
+					<alpha value="0" time=".25" delay=".3" target="PROFILE" />
+					<assign property="var:displayProfile" value="0" />
+				</else>
+			</if>		
+		</action>
+		<action name="prep-history">
+			<translate xpos="85%" time=".2" target="HISTORY" />
+			<translate align="left" time=".2" target="PROFILE" />
+		</action>
+		<action name="toggle-history">
+			<if lhs="[var:displayHistory]" operator="!=" rhs="1">
+				<alpha value="1" time="0" target="HISTORY" />
+				<translate xpos="0%" ypos="0" time=".3" target="HISTORY" />
+				<translate xpos="-105%" time=".3" target="BG" />
+				<alpha value="1" time=".25" target="PROFILE" />
+				<assign property="var:displayHistory" value="1" />
+				<else>
+					<translate align="right" time=".3" target="PROFILE" />
+					<translate xpos="100%" ypos="36" time=".3" target="HISTORY" />
+					<translate xpos="-85%" time=".3" target="BG" />
+					<alpha value="1" time=".25" delay=".3" target="PROFILE" />
+					<assign property="var:displayHistory" value="0" />
+					<alpha value="1" time="0" delay=".3" target="HISTORY" />
+				</else>
+			</if>		
 		</action>
 		<action name="null" ></action>
 	</actions>
