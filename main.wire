@@ -294,20 +294,20 @@
 		</action>
 		<action name="prep-history">
 			<translate xpos="85%" time=".2" target="HISTORY" />
-			<translate align="left" time=".2" target="PROFILE" />
 		</action>
 		<action name="toggle-history">
 			<if lhs="[var:displayHistory]" operator="!=" rhs="1">
 				<alpha value="1" time="0" target="HISTORY" />
 				<translate xpos="0%" ypos="0" time=".3" target="HISTORY" />
 				<translate xpos="-105%" time=".3" target="BG" />
-				<alpha value="1" time=".25" target="PROFILE" />
+				<translate align="left" time=".2" target="PROFILE" />
+				<alpha value="0" time=".25" target="PROFILE" />
 				<assign property="var:displayHistory" value="1" />
 				<else>
 					<translate align="right" time=".3" target="PROFILE" />
 					<translate xpos="100%" ypos="36" time=".3" target="HISTORY" />
 					<translate xpos="-85%" time=".3" target="BG" />
-					<alpha value="1" time=".25" delay=".3" target="PROFILE" />
+					<alpha value="1" time=".3" delay=".15" target="PROFILE" />
 					<assign property="var:displayHistory" value="0" />
 					<alpha value="1" time="0" delay=".3" target="HISTORY" />
 				</else>
