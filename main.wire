@@ -85,7 +85,7 @@
 			</panel>
 		</class>
 		<class name="scanwait">
-			<panel name="scanwait" width="100%" height="100%" background="333333">
+			<panel name="scanwait" ALIAS="SCANWAIT" width="100%" height="100%" background="333333">
 				<panel name="line" style="hdivider" background="eeeeee"></panel>
 				<wait name="wait" width="100%" height="100%" color="eeeeee"></wait>
 				<text name="text" width="100%" height="30" color="eeeeee" font="HelveticaNeue-Light" size="18" alignment="center" text="Retrieving product data..." ypos="55%"></text>
@@ -123,7 +123,7 @@
 		<panel name="main" alias="MAIN" width="100%" height="100%">
 			<image name="blur" source="images/blur.png" height="100%" width="100%"></image>
 			<!-- profile -->
-			<panel name="profile" alias="PROFILE" width="85%" height="100%" align="right" ypos="50%" alpha="0">
+			<panel name="profile" alias="PROFILE" width="85%" height="100%" align="right" ypos="34" alpha="0">
 				<panel name="toolbar" width="80%" height="64" align="center">
 					<!-- <panel name="background" width="100%" height="100%" background="#ffffff" alpha=".05"></panel> -->
 					<panel name="wrapper" width="100%" height="44" valign="bottom">
@@ -158,7 +158,7 @@
 		         		</text>
 					</panel>
 				</panel>
-				<panel name="body" width="100%" height="[eval: [object:BG.height] - [object:TOOLBAR.height]]" valign="bottom" background="20263c"></panel>
+				<panel name="body" width="100%" height="[eval: [object:BG.height] - [object:TOOLBAR.height]" valign="bottom" background="00ff00"></panel>
 			</panel>
 			<!-- home -->
 			<panel name="bg" alias="BG" width="100%" height="100%" shadowradius="5" shadowopacity=".7">
@@ -174,9 +174,10 @@
 						</panel>
 					</panel>
 				</panel>
-				<panel name="body" alias="BODY" width="100%" height="[eval: [object:BG.height] - [object:TOOLBAR.height]" valign="bottom" background="00ff00"></panel>
+				<panel name="body" alias="BODY" width="100%" height="[eval: [object:BG.height] - [object:TOOLBAR.height]]" valign="bottom" background="00ff00">
+					<camera name="scancam" alias="SCANCAM" height="100%" width="100%" type="barcodescan" face="back" onscan="sendscan"></camera>
+				</panel>
 			</panel>
-			
 		</panel>
 	</main>
 	<actions>
@@ -250,9 +251,13 @@
         </action>
         <action name="sendscan">
 			<sync>
-				<create class="scanwait" target="SCANBODY"/>
-				<assign property="var:upc" value="[object:CAMERA.scanvalue]"/>
+				<create class="scanwait" target="BODY"/>
+				<assign property="var:upc" value="[object:SCANCAM.scanvalue]"/>
 				<assign property="datasource:food-upc-request.source" value="[template:food-by-upc-url.content]"/>
+				<if lhs="[var:upc]" operator="e" rhs="">
+					<alert message="Product not found." />
+					<delete target="SCANWAIT"/>
+				</if>
 			</sync>
         </action>
         <action name="upc-found">
@@ -262,41 +267,47 @@
 			<sync>
 				<assign property="var:alCount" value="0"/>
 				<loop lhs="[datasource:food-allergy-list.dataSourceResultCount]" operator="gt" rhs="[var:alCount]">
-					<alert message="[datasource:food-allergy-list.[var:alCount].allergen_name] [datasource:food-allergy-list.[var:alCount].allergen_value]"/>
+					<if lhs="[preferences:[datasource:food-allergy-list.[var:alCount].allergen_name]]" operator="e" rhs="1">
+						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_value]" operator="e" rhs="2">
+							<alert message="This product contains [datasource:food-allergy-list.[var:alCount].allergen_name]!" />
+						</if>
+						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_value]" operator="e" rhs="1">
+							<alert message="This product may contain [datasource:food-allergy-list.[var:alCount].allergen_name]." />
+						</if>
+					</if>
+					<!-- <alert message="[datasource:food-allergy-list.[var:alCount].allergen_name] [datasource:food-allergy-list.[var:alCount].allergen_value]"/> -->
 					<assign property="var:alCount" value="[eval: [var:alCount] + 1 ]"/>
 				</loop>
-			</sync> 
+			</sync>
 		</action>
 		<action name="toggle-profile">
 			<if lhs="[var:displayProfile]" operator="!=" rhs="1">
 				<translate xpos="-85%" ypos="34" time=".3" target="BG" />
-				<alpha value="1" time=".3" delay=".15" target="PROFILE" />
-				<translate ypos="34" time=".25" target="PROFILE" />
+				<alpha value="1" time=".25" target="PROFILE" />
 				<assign property="var:displayProfile" value="1" />
 				<else>
 					<translate xpos="0" ypos="0" time=".3" target="BG" />
 					<alpha value="0" time=".25" delay=".3" target="PROFILE" />
-					<translate ypos="50%" time=".25" target="PROFILE" />
 					<assign property="var:displayProfile" value="0" />
 				</else>
 			</if>		
 		</action>
 		<action name="prep-history">
 			<translate xpos="85%" time=".2" target="HISTORY" />
+			<translate align="left" time=".2" target="PROFILE" />
 		</action>
 		<action name="toggle-history">
 			<if lhs="[var:displayHistory]" operator="!=" rhs="1">
 				<alpha value="1" time="0" target="HISTORY" />
 				<translate xpos="0%" ypos="0" time=".3" target="HISTORY" />
 				<translate xpos="-105%" time=".3" target="BG" />
-				<translate align="left" time=".2" target="PROFILE" />
-				<alpha value="0" time=".25" target="PROFILE" />
+				<alpha value="1" time=".25" target="PROFILE" />
 				<assign property="var:displayHistory" value="1" />
 				<else>
 					<translate align="right" time=".3" target="PROFILE" />
 					<translate xpos="100%" ypos="36" time=".3" target="HISTORY" />
 					<translate xpos="-85%" time=".3" target="BG" />
-					<alpha value="1" time=".3" delay=".15" target="PROFILE" />
+					<alpha value="1" time=".25" delay=".3" target="PROFILE" />
 					<assign property="var:displayHistory" value="0" />
 					<alpha value="1" time="0" delay=".3" target="HISTORY" />
 				</else>
