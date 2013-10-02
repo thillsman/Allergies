@@ -21,43 +21,46 @@
 	<classes>
 		<class name="allergyboxclass">
 			<panel name="[param:n]" xpos="[param:x]" style="allergyboxstyle" onclickup="[param:action]" _actiondata="[param:actiondata]">
-				<image name="icon" source="[param:img]" width="80" height="80" align="center" valign="center"></image>
+				<image name="icon" source="[param:img]" width="80" height="80" align="center" valign="center" background="#000000"></image>
 				<text name="text" width="100%" height="fit" bottomof="icon" color="8ca0ab" font="HelveticaNeue-Light" size="14" alignment="center" valignment="center" valign="bottom" text="[param:allergy]" ></text>
 			</panel>
 		</class>
 		<class name="allergypicker"> 
-			<panel name="allergypicker" alias="ALLERGYPICKER" width="92%" height="95%" align="center" valign="center" background="658ea2" clip="yes" cornerradius="5">
-				<panel name="allergypickhead" width="100%" height="44" background="232a46">
-					<panel name="allergypicktitle" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
-						<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="My Allergies..."></text>
-						<image name="nextscreen" source="images/icon.search.png" align="right" valign="center" onclickup="showscanner"></image>
+			<panel name="allergypicker" width="100%" height="100%" alias="ALLERGYPICKER">
+				<panel name="curtain" width="100%" height="100%" background="#000000" alpha=".5" ></panel>
+				<panel name="container" alias="ALLERGYPICKER-CONTAINER" width="92%" height="95%" align="center" valign="center" background="658ea2" clip="yes" cornerradius="5">
+					<panel name="toolbar" width="100%" height="44" background="5d7a80">
+						<panel name="allergypicktitle" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
+							<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="My Allergies..."></text>
+							<image name="nextscreen" source="images/icon.search.png" align="right" valign="center" onclickup="showscanner"></image>
+						</panel>
 					</panel>
-				</panel>
-				<panel name="allergyoptions" alias="ALLERGYOPTIONS" width="200%" height="[eval:[object:ALLERGYPICKER.height] - 44]" valign="bottom" background="eeeeee">
-					<panel name="row-1" width="100%" height="25%">
-						<panel name="background" width="100%" height="100%" style="row-color" alpha="1"></panel>
-						<object class="allergyboxclass" n="Cereals" x="0%" img="x.png" allergy="Cereals" action="saveallergy" actiondata="cereals"/>
-						<object class="allergyboxclass" n="Coconut" x="25%" img="x.png" allergy="Coconut" action="saveallergy" actiondata="coconut"/>
-						<object class="allergyboxclass" n="Peanuts" x="50%" img="x.png" allergy="Peanuts" action="saveallergy" actiondata="peanuts"/>
-						<object class="allergyboxclass" n="Sesame seeds" x="75%" img="x.png" allergy="Sesame seeds" action="saveallergy" actiondata="sesameseeds"/>
-					</panel>
-					<panel name="row-2" width="100%" height="25%" style="row-color" alpha=".975" bottomof="row-1">
-						<object class="allergyboxclass" n="Corn" x="0%" img="x.png" allergy="Corn" action="saveallergy" actiondata="corn"/>
-						<object class="allergyboxclass" n="Egg" x="25%" img="x.png" allergy="Egg" action="saveallergy" actiondata="egg"/>
-						<object class="allergyboxclass" n="Shellfish" x="50%" img="x.png" allergy="Shellfish" action="saveallergy" actiondata="shellfish"/>
-						<object class="allergyboxclass" n="Soybean" x="75%" img="x.png" allergy="Soybean" action="saveallergy" actiondata="soybean"/>
-					</panel>
-					<panel name="row-3" width="100%" height="25%" style="row-color" alpha=".95" bottomof="row-2">
-						<object class="allergyboxclass" n="Fish" x="0%" img="x.png" allergy="Fish" action="saveallergy" actiondata="fish"/>
-						<object class="allergyboxclass" n="Gluten" x="25%" img="x.png" allergy="Gluten" action="saveallergy" actiondata="gluten"/>
-						<object class="allergyboxclass" n="Sulfites" x="50%" img="x.png" allergy="Sulfites" action="saveallergy" actiondata="sulfites"/>
-						<object class="allergyboxclass" n="Tree nuts" x="75%" img="x.png" allergy="Tree nuts" action="saveallergy" actiondata="treenuts"/>
-					</panel>
-					<panel name="row-4" width="100%" height="25%" style="row-color" alpha=".925" bottomof="row-3">
-						<object class="allergyboxclass" n="Milk" x="0%" img="x.png" allergy="Milk" action="saveallergy" actiondata="milk"/>
-						<object class="allergyboxclass" n="forward" x="25%" img="x.png" allergy="More" action="slideallergies" actiondata="-100%"/>
-						<object class="allergyboxclass" n="backward" x="50%" img="x.png" allergy="More" action="slideallergies" actiondata="0%"/>
-						<object class="allergyboxclass" n="Wheat" x="75%" img="x.png" allergy="Wheat" action="saveallergy" actiondata="wheat"/>
+					<panel name="allergyoptions" alias="ALLERGYOPTIONS" width="200%" height="[eval:[object:ALLERGYPICKER-CONTAINER.height] - 44]" valign="bottom">
+						<panel name="row-1" width="100%" height="25%">
+							<panel name="background" width="100%" height="100%" style="row-color" alpha="1"></panel>
+							<object class="allergyboxclass" n="Cereals" x="0%" img="x.png" allergy="Cereals" action="saveallergy" actiondata="cereals"/>
+							<object class="allergyboxclass" n="Coconut" x="25%" img="x.png" allergy="Coconut" action="saveallergy" actiondata="coconut"/>
+							<object class="allergyboxclass" n="Peanuts" x="50%" img="x.png" allergy="Peanuts" action="saveallergy" actiondata="peanuts"/>
+							<object class="allergyboxclass" n="Sesame seeds" x="75%" img="x.png" allergy="Sesame seeds" action="saveallergy" actiondata="sesameseeds"/>
+						</panel>
+						<panel name="row-2" width="100%" height="25%" style="row-color" alpha=".975" bottomof="row-1">
+							<object class="allergyboxclass" n="Corn" x="0%" img="x.png" allergy="Corn" action="saveallergy" actiondata="corn"/>
+							<object class="allergyboxclass" n="Egg" x="25%" img="x.png" allergy="Egg" action="saveallergy" actiondata="egg"/>
+							<object class="allergyboxclass" n="Shellfish" x="50%" img="x.png" allergy="Shellfish" action="saveallergy" actiondata="shellfish"/>
+							<object class="allergyboxclass" n="Soybean" x="75%" img="x.png" allergy="Soybean" action="saveallergy" actiondata="soybean"/>
+						</panel>
+						<panel name="row-3" width="100%" height="25%" style="row-color" alpha=".95" bottomof="row-2">
+							<object class="allergyboxclass" n="Fish" x="0%" img="x.png" allergy="Fish" action="saveallergy" actiondata="fish"/>
+							<object class="allergyboxclass" n="Gluten" x="25%" img="x.png" allergy="Gluten" action="saveallergy" actiondata="gluten"/>
+							<object class="allergyboxclass" n="Sulfites" x="50%" img="x.png" allergy="Sulfites" action="saveallergy" actiondata="sulfites"/>
+							<object class="allergyboxclass" n="Tree nuts" x="75%" img="x.png" allergy="Tree nuts" action="saveallergy" actiondata="treenuts"/>
+						</panel>
+						<panel name="row-4" width="100%" height="25%" style="row-color" alpha=".925" bottomof="row-3">
+							<object class="allergyboxclass" n="Milk" x="0%" img="x.png" allergy="Milk" action="saveallergy" actiondata="milk"/>
+							<object class="allergyboxclass" n="forward" x="25%" img="x.png" allergy="More" action="slideallergies" actiondata="-100%"/>
+							<object class="allergyboxclass" n="backward" x="50%" img="x.png" allergy="More" action="slideallergies" actiondata="0%"/>
+							<object class="allergyboxclass" n="Wheat" x="75%" img="x.png" allergy="Wheat" action="saveallergy" actiondata="wheat"/>
+						</panel>
 					</panel>
 				</panel>
 			</panel>
@@ -112,7 +115,15 @@
 		</class>
 	</classes>
 	<main>
-		<panel name="bg" alias="BG" width="100%" height="100%"></panel>
+		<panel name="bg" alias="BG" width="100%" height="100%">
+			<panel name="toolbar" alias="TOOLBAR" width="100%" height="64" background="232a46">
+				<panel name="allergypicktitle" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
+					<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="APP NAME"></text>
+					<image name="nextscreen" source="images/icon.search.png" align="right" valign="center" onclickup="showscanner"></image>
+				</panel>
+			</panel>
+			<panel name="body" alias="BODY" width="100%" height="[eval: [object:BG.height] - [object:TOOLBAR.height]" valign="bottom" background="00ff00"></panel>
+		</panel>
 	</main>
 	<actions>
 		<action name="oninit" oninit="yes">
