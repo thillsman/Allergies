@@ -135,19 +135,10 @@
 							</panel>
 						</panel>
 					</panel>
-					<pager name="contents" width="100%" height="150" valign="bottom" orientation="vertical" paginate="no" background="ffffff">
-						<panel name="allergy-1" width="100%" height="50%">
-							<panel name="background" width="100%" height="100%" background="f25a55"></panel> 
-							<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
-								<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="Peanuts" />
-							</panel>
-						</panel>
-						<panel name="allergy-2" width="100%" height="50%">
-							<panel name="background" width="100%" height="100%" background="e7b54a"></panel>
-							<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
-								<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="Wheat" />
-							</panel>
-						</panel>
+					<panel name="wrapper" alias="YOUCANEAT" width="100%" height="150" valign="bottom" padding-left="10" padding-right="10" alpha="0" background="ffffff">
+						<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="center" color="#333333" text="You can eat this!" />
+					</panel>
+					<pager name="contents" alias="ALLERGIESCONTENTS" width="100%" height="150" valign="bottom" orientation="vertical" paginate="no">
 					</pager>
 				</panel>
 				<panel name="ingredients" alias="ALLERGY-MODAL-INGRED" width="100%" height="100%" hidden="yes">
@@ -160,6 +151,22 @@
 						</panel>
 					</panel>
 					<panel name="contents" width="100%" height="150" valign="bottom" background="ffffff"></panel>
+				</panel>
+			</panel>
+		</class>
+		<class name="allergyitemred">
+			<panel name="[param:item]" width="100%" height="30%">
+				<panel name="background" width="100%" height="100%" background="f25a55"></panel> 
+				<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
+					<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="[param:item]" />
+				</panel>
+			</panel>
+		</class>
+		<class name="allergyitemyellow">
+			<panel name="[param:item]" width="100%" height="30%">
+				<panel name="background" width="100%" height="100%" background="e7b54a"></panel>
+				<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
+					<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="[param:item]" />
 				</panel>
 			</panel>
 		</class>
@@ -403,14 +410,20 @@
 				<loop lhs="[datasource:food-allergy-list.dataSourceResultCount]" operator="gt" rhs="[var:alCount]">
 					<if lhs="[preferences:[datasource:food-allergy-list.[var:alCount].allergen_name]]" operator="e" rhs="1">
 						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_value]" operator="e" rhs="2">
+							<create class="allergyitemred" target="ALLERGIESCONTENTS" item="[datasource:food-allergy-list.[var:alCount].allergen_name]"/>
 							<alert message="This product contains [datasource:food-allergy-list.[var:alCount].allergen_name]!" />
 							<assign property="var:allergylevel" value="2" />
 						</if>
 						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_value]" operator="e" rhs="1">
+							<create class="allergyitemyellow" target="ALLERGIESCONTENTS" item="[datasource:food-allergy-list.[var:alCount].allergen_name]"/>
 							<alert message="This product may contain [datasource:food-allergy-list.[var:alCount].allergen_name]." />
 							<if lhs="[var:allergylevel]" operator="ne" rhs="2">
 								<assign property="var:allergylevel" value="1" />
 							</if>
+						</if>
+						<if lhs="[var:allergylevel]" operator="e" rhs="0">
+							<alpha value="0" time="0" target="ALLERGIESCONTENTS" />
+							<alpha value="1" time="0" target="YOUCANEAT" />
 						</if>
 					</if>
 					<!-- <alert message="[datasource:food-allergy-list.[var:alCount].allergen_name] [datasource:food-allergy-list.[var:alCount].allergen_value]"/> -->
