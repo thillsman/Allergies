@@ -87,7 +87,7 @@
 			</panel>
 		</class>
 		<class name="scanwait">
-			<panel name="scanwait" ALIAS="SCANWAIT" width="100%" height="100%" background="333333">
+			<panel name="scanwait" alias="SCANWAIT" width="100%" height="100%" background="333333">
 				<panel name="line" style="hdivider" background="eeeeee"></panel>
 				<wait name="wait" width="100%" height="100%" color="eeeeee"></wait>
 				<text name="text" width="100%" height="30" color="eeeeee" font="HelveticaNeue-Light" size="18" alignment="center" text="Retrieving product data..." ypos="55%"></text>
@@ -314,27 +314,33 @@
 			</sync>
         </action>
         <action name="upc-found">
+        	<alpha value="0" target="SCANWAIT"/>
             <assign property="datasource:food-allergy-list.data" value="[datasource:food-upc-request.1.productsArray[0]/allergens]"/>
         </action>
         <action name="allergy-check">
 			<sync>
 				<assign property="var:alCount" value="0"/>
+				<assign property="var:allergylevel" value="0" />
 				<loop lhs="[datasource:food-allergy-list.dataSourceResultCount]" operator="gt" rhs="[var:alCount]">
 					<if lhs="[preferences:[datasource:food-allergy-list.[var:alCount].allergen_name]]" operator="e" rhs="1">
 						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_value]" operator="e" rhs="2">
 							<alert message="This product contains [datasource:food-allergy-list.[var:alCount].allergen_name]!" />
+							<assign property="var:allergylevel" value="2" />
 						</if>
 						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_value]" operator="e" rhs="1">
 							<alert message="This product may contain [datasource:food-allergy-list.[var:alCount].allergen_name]." />
+							<if lhs="[var:allergylevel]" operator="ne" rhs="2">
+								<assign property="var:allergylevel" value="1" />
+							</if>
 						</if>
 					</if>
 					<!-- <alert message="[datasource:food-allergy-list.[var:alCount].allergen_name] [datasource:food-allergy-list.[var:alCount].allergen_value]"/> -->
 					<assign property="var:alCount" value="[eval: [var:alCount] + 1 ]"/>
 				</loop>
-				<assign property="var:productname" value="[eval: '[datasource:food-upc-request.1.productsArray[0]/product_name]'.replace(/'/,'');" />
-				<assign property="datasource:history-write.query" value="INSERT INTO history (upc, name, shelf, allergylevel) VALUES ('[datasource:food-upc-request.1.productsArray[0]/upc]','[var:productname]','[datasource:food-upc-request.1.productsArray[0]/shelf]','[var:allergylevel]')" />
+				<assign property="var:productname" value="[datasource:food-upc-request.1.productsArray[0]/product_name]" />
+				<assign property="datasource:history-write.query" value="INSERT OR REPLACE INTO history (upc, name, shelf, allergylevel) VALUES ('[datasource:food-upc-request.1.productsArray[0]/upc]','[var:productname]','[datasource:food-upc-request.1.productsArray[0]/shelf]','[var:allergylevel]')" />
 				<alert message="INSERT INTO history (upc, name, shelf, allergylevel) VALUES ('[datasource:food-upc-request.1.productsArray[0]/upc]','[datasource:food-upc-request.1.productsArray[0]/product_name]','[datasource:food-upc-request.1.productsArray[0]/shelf]','[var:allergylevel]')" />
-			</sync>
+			</sync> 
 		</action>
 		<action name="toggle-profile">
 			<if lhs="[var:displayProfile]" operator="!=" rhs="1">
@@ -388,7 +394,7 @@
 					<if lhs="[datasource:history-read.[var:historycount].allergylevel]" operator="e" rhs="1">
 						<assign property="var:allergycolor" value="999900" />
 					</if>
-					<if lhs="[datasource:history-read.[var:historycount].allergylevel]" operator="e" rhs="1">
+					<if lhs="[datasource:history-read.[var:historycount].allergylevel]" operator="e" rhs="0">
 						<assign property="var:allergycolor" value="333333" />
 					</if>
 					<create class="historyitems" target="HISTORYPAGER" id="[datasource:history-read.[var:historycount].id]" name="[datasource:history-read.[var:historycount].name]" color="[var:allergycolor]"/>
@@ -396,6 +402,7 @@
 				</loop>
 			</sync>
 			</if>
+		</action>
 		<action name="TYLER">
 			<create class="allergy-modal" target="MAIN" />
 		</action>
