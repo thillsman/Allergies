@@ -5,12 +5,13 @@
 		<datasource name="food-allergy-list" source="" query="/" providertype="json" querycomplete="allergy-check"/>
 		<datasource name="sendgrid" source="" query="/" providertype="json"  querycomplete="mailsent" httpmethod="post"/>
         <datasource name="contacts" source="" query="/contacts" providertype="contacts" querycomplete="done"/>
-		<datasource name="history-write" source="sql://producthistory" query="CREATE TABLE IF NOT EXISTS history (id INTEGER PRIMARY KEY AUTOINCREMENT, upc TEXT UNIQUE, name TEXT, shelf TEXT, allergylevel TEXT);" providertype="sql" />
-		<datasource name="history-read" source="sql://producthistory" query="" providertype="sql" querycomplete="listhistory2"/>
+		<datasource name="history-write" source="sql://db" query="CREATE TABLE IF NOT EXISTS history (id INTEGER PRIMARY KEY AUTOINCREMENT, upc TEXT, name TEXT, shelf TEXT, allergylevel TEXT);" providertype="sql" />
+		<datasource name="history-read" source="sql://db" query="" providertype="sql" querycomplete="listhistory2"/>
 		<texttemplate name="food-session-url"><![CDATA[http://api.foodessentials.com/createsession?uid=[var:uid]&devid=[var:devid]&appid=[var:appid]&f=json&api_key=[var:api_key]]]></texttemplate>
 		<texttemplate name="food-by-upc-url"><![CDATA[http://api.foodessentials.com/labelarray?u=[var:upc]&sid=[var:session]&n=1&s=0&f=json&api_key=[var:api_key]&v=2.0]]></texttemplate>
 		<texttemplate name="post-fields"><![CDATA[api_user=jheryer&api_key=11rarewire11&to=[var:toaddress]&subject=[var:subject]&text=[template:email-template.content]&from=jheryer@rarewire.com]]></texttemplate>
-        <texttemplate name="email-template"><![CDATA[alergy list]]></texttemplate>
+        <texttemplate name="email-template"><![CDATA[Just wanted to give you a heads up on our family's food allergies! [pref:all-allergies] ]]></texttemplate>
+        <texttemplate name="allergy-list"><![CDATA[Cereals,Coconut,Peanuts,Sesame seeds,Corn,Egg,Shellfish,Soybean,Fish,Gluten,Sulfites,Tree nuts,Milk,Wheat]]></texttemplate>
 	</datasources>
 	<styles>
 		<style name="allergyboxstyle" width="25%" height="100%"/>
@@ -137,10 +138,19 @@
 							</panel>
 						</panel>
 					</panel>
-					<panel name="wrapper" alias="YOUCANEAT" width="100%" height="150" valign="bottom" padding-left="10" padding-right="10" alpha="0" background="ffffff">
-						<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="center" color="#333333" text="You can eat this!" />
-					</panel>
-					<pager name="contents" alias="ALLERGIESCONTENTS" width="100%" height="150" valign="bottom" orientation="vertical" paginate="no">
+					<pager name="contents" width="100%" height="150" valign="bottom" orientation="vertical" paginate="no" background="ffffff">
+						<panel name="allergy-1" width="100%" height="50%">
+							<panel name="background" width="100%" height="100%" background="f25a55"></panel> 
+							<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
+								<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="Peanuts" />
+							</panel>
+						</panel>
+						<panel name="allergy-2" width="100%" height="50%">
+							<panel name="background" width="100%" height="100%" background="e7b54a"></panel>
+							<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
+								<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="Wheat" />
+							</panel>
+						</panel>
 					</pager>
 				</panel>
 				<panel name="ingredients" alias="ALLERGY-MODAL-INGRED" width="100%" height="100%" hidden="yes">
@@ -153,22 +163,6 @@
 						</panel>
 					</panel>
 					<panel name="contents" width="100%" height="150" valign="bottom" background="ffffff"></panel>
-				</panel>
-			</panel>
-		</class>
-		<class name="allergyitemred">
-			<panel name="[param:item]" width="100%" height="30%">
-				<panel name="background" width="100%" height="100%" background="f25a55"></panel> 
-				<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
-					<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="[param:item]" />
-				</panel>
-			</panel>
-		</class>
-		<class name="allergyitemyellow">
-			<panel name="[param:item]" width="100%" height="30%">
-				<panel name="background" width="100%" height="100%" background="e7b54a"></panel>
-				<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
-					<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="[param:item]" />
 				</panel>
 			</panel>
 		</class>
@@ -410,20 +404,14 @@
 				<loop lhs="[datasource:food-allergy-list.dataSourceResultCount]" operator="gt" rhs="[var:alCount]">
 					<if lhs="[preferences:[datasource:food-allergy-list.[var:alCount].allergen_name]]" operator="e" rhs="1">
 						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_value]" operator="e" rhs="2">
-							<create class="allergyitemred" target="ALLERGIESCONTENTS" item="[datasource:food-allergy-list.[var:alCount].allergen_name]"/>
 							<alert message="This product contains [datasource:food-allergy-list.[var:alCount].allergen_name]!" />
 							<assign property="var:allergylevel" value="2" />
 						</if>
 						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_value]" operator="e" rhs="1">
-							<create class="allergyitemyellow" target="ALLERGIESCONTENTS" item="[datasource:food-allergy-list.[var:alCount].allergen_name]"/>
 							<alert message="This product may contain [datasource:food-allergy-list.[var:alCount].allergen_name]." />
 							<if lhs="[var:allergylevel]" operator="ne" rhs="2">
 								<assign property="var:allergylevel" value="1" />
 							</if>
-						</if>
-						<if lhs="[var:allergylevel]" operator="e" rhs="0">
-							<alpha value="0" time="0" target="ALLERGIESCONTENTS" />
-							<alpha value="1" time="0" target="YOUCANEAT" />
 						</if>
 					</if>
 					<!-- <alert message="[datasource:food-allergy-list.[var:alCount].allergen_name] [datasource:food-allergy-list.[var:alCount].allergen_value]"/> -->
@@ -555,8 +543,8 @@
             <assign property="var:subject"   value="My Allergy List"/>
             <assign property="var:name" value="_name" />
             <assign property="var:toaddress" value="_address"/>
-            <assign property="datasource:sendgrid.postContent" value="[template:post-fields.content]"/>
-            <assign property="datasource:sendgrid.source" value="http://sendgrid.com/api/mail.send.json"/>
+            <play action="build-allergy-list" />
+            
             </sync>
         </action>
         
@@ -567,6 +555,22 @@
         <action name="mailsent">
             <alert title="Allergies Sent" message="A friendly message has been sent to [var:name]"/>
         </action>
+
+        <action name="build-allergy-list">
+			<sync>
+			<assign property="preferences:all-allergies" value="" />
+			<assign property="var:all-allergies" value="0" />
+			<loop lhs="[var:all-allergies]" operator="lt" rhs="[js:'[template:allergy-list.content]'.split(',').length;]">
+			<if lhs="[preferences:[js:'[template:allergy-list.content]'.split(',')[[var:all-allergies]]]]" operator="e" rhs="1">
+			<assign property="preferences:all-allergies" value="[preferences:all-allergies] [js:'[template:allergy-list.content]'.split(',')[[var:all-allergies]]]" />
+			</if>
+			<assign property="var:all-allergies" value="[eval:
+			[var:all-allergies] + 1]" />
+			</loop>
+			<assign property="datasource:sendgrid.postContent" value="[template:post-fields.content]"/>
+            <assign property="datasource:sendgrid.source" value="http://sendgrid.com/api/mail.send.json"/>
+			</sync>
+		</action>
 
 		<action name="null" ></action>
 	</actions>
