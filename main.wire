@@ -249,7 +249,7 @@
 						<panel name="profile" width="66" height="100%" align="right" onclickup="toggle-profile">
 							<image name="icon" source="images/icon.user.png" align="right" valign="center"></image>
 						</panel>
-						<textfield name="search-textfield" alias="SEARCH-TEXTFIELD" width="80%" height="100%" align="center" font="HelveticaNeue-Light" size="18" color="ffffff" alignment="left" valignment="center" border="none" placeholder="UPC" alpha="0"></textfield>
+						<textfield name="search-textfield" alias="SEARCH-TEXTFIELD" onreturnkeypressed="searchscan" width="80%" height="100%" align="center" font="HelveticaNeue-Light" size="18" color="ffffff" alignment="left" valignment="center" border="none" placeholder="UPC" alpha="0"></textfield>
 						<panel name="clear" width="66" height="100%" align="right" onclickup="toggle-search" alpha="0">
 							<image name="icon" source="images/icon.close.png" align="right" valign="center"></image>
 						</panel>
@@ -533,5 +533,16 @@
         </action>
 
 		<action name="null" ></action>
+
+        <action name="searchscan">
+                <assign property="var:upc" value="[object:SEARCH-TEXTFIELD.text]"/>
+                <assign property="datasource:food-upc-request.source" value="[template:food-by-upc-url.content]"/>
+                <if lhs="[var:upc]" operator="e" rhs="">
+                     <alert message="Product not found." />
+                     <delete target="SCANWAIT"/>
+                </if>
+        </action>
 	</actions>
+
+
 </wire>
