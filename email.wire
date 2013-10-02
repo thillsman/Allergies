@@ -1,0 +1,48 @@
+<wire>
+    <datasources>
+
+        <datasource name="sendgrid" source="" query="/" providertype="json"  querycomplete="mailsent" httpmethod="post"/>
+        <texttemplate name="post-fields"><![CDATA[api_user=jheryer&api_key=11rarewire11&to=[var:toaddress]&subject=[var:subject]&text=[template:email-template.content]&from=jheryer@rarewire.com]]></texttemplate>
+        <texttemplate name="email-template"><![CDATA[alergy list]]></texttemplate>
+
+        <datasource name="contacts" source="" query="/contacts" providertype="contacts" querycomplete="done"/>
+
+    </datasources>
+    <classes>
+        <class name="contacts">
+            <panel alias="CONTACT" height="25%" width="100%" background="#ffffff">
+                <image name="image" fullpath="[param:picture]" height="25" width="25" valign="center"/>
+                <text name="name" alias="text[param:index]" text="[param:first] [param:email]" width="100%" height="80%" size="12" rightof="image"  alignment="left" background="#ffffff" color="#000000" />
+                <panel name="email" height="80%" width="15%" onclickup="send-email" _address="[param:email]" background="#ff0000" align="right"/>
+            </panel>
+        </class>
+    </classes>
+    <main>
+        <list name="contacts" alias="LIST" datasource="contacts" height="40%" width="95%" align="center"  valign="center" background = "#0000ff" orientation="vertical" paginate="no">
+            <object class="contacts" index="[param:dataSourceIndex]" first="[param:firstname]" last="[param:lastname]" email="[param:email[0]]" phone="[param:phone[0]/number]" picture="[param:image]" lhs="[param:email[0]]" operator="ne" rhs=""/>
+        </list>
+    </main>
+    <actions>
+        <action name="oninit" oninit="yes">
+            <sync>
+                 <assign property="datasource:contacts.source" value="*"/>
+            </sync>
+        </action>
+        
+        
+        <action name="send-email">
+            <sync>
+            <alert message="_address"/>
+            <assign property="var:subject"   value="My Allergy List"/>
+            <assign property="var:toaddress" value="jheryer@rarewire.com"/>
+            <assign property="datasource:sendgrid.postContent" value="[template:post-fields.content]"/>
+            <assign property="datasource:sendgrid.source" value="http://sendgrid.com/api/mail.send.json"/>
+            </sync>
+        </action>
+        
+        <action name="mailsent">
+            <alert message="mailsent [datasource:sendgrid.0.content]"/>
+        </action>
+        
+    </actions>
+</wire>
