@@ -5,8 +5,8 @@
 		<datasource name="food-allergy-list" source="" query="/" providertype="json" querycomplete="allergy-check"/>
 		<datasource name="sendgrid" source="" query="/" providertype="json"  querycomplete="mailsent" httpmethod="post"/>
         <datasource name="contacts" source="" query="/contacts" providertype="contacts" querycomplete="done"/>
-		<datasource name="history-write" source="sql://db" query="CREATE TABLE IF NOT EXISTS history (id INTEGER PRIMARY KEY AUTOINCREMENT, upc TEXT, name TEXT, shelf TEXT, allergylevel TEXT);" providertype="sql" />
-		<datasource name="history-read" source="sql://db" query="" providertype="sql" querycomplete="listhistory2"/>
+		<datasource name="history-write" source="sql://producthistory" query="CREATE TABLE IF NOT EXISTS history (id INTEGER PRIMARY KEY AUTOINCREMENT, upc TEXT UNIQUE, name TEXT, shelf TEXT, allergylevel TEXT);" providertype="sql" />
+		<datasource name="history-read" source="sql://producthistory" query="" providertype="sql" querycomplete="listhistory2"/>
 		<texttemplate name="food-session-url"><![CDATA[http://api.foodessentials.com/createsession?uid=[var:uid]&devid=[var:devid]&appid=[var:appid]&f=json&api_key=[var:api_key]]]></texttemplate>
 		<texttemplate name="food-by-upc-url"><![CDATA[http://api.foodessentials.com/labelarray?u=[var:upc]&sid=[var:session]&n=1&s=0&f=json&api_key=[var:api_key]&v=2.0]]></texttemplate>
 		<texttemplate name="post-fields"><![CDATA[api_user=jheryer&api_key=11rarewire11&to=[var:toaddress]&subject=[var:subject]&text=[template:email-template.content]&from=jheryer@rarewire.com]]></texttemplate>
@@ -124,8 +124,8 @@
 				</panel>
 			</panel>
 		</class>
-		<class name="allergy-modal">
-			<panel name="allergy-modal" alias="ALLERGY-MODAL" width="85%" height="194" align="center" valign="center" clip="yes" cornerradius="5">
+		<class name="allergy-modal"><!-- 194 -->
+			<panel name="allergy-modal" alias="ALLERGY-MODAL" width="85%" height="294" align="center" valign="center" clip="yes" cornerradius="5">
 				<panel name="alert" alias="ALLERGY-MODAL-ALERT" width="100%" height="100%">
 					<panel name="toolbar" width="100%" height="44" background="457291">
 						<panel name="wrapper" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
@@ -135,17 +135,20 @@
 							</panel>
 						</panel>
 					</panel>
-					<pager name="contents" width="100%" height="150" valign="bottom" orientation="vertical" paginate="no" background="ffffff">
+					<pager name="contents" width="100%" height="250" valign="bottom" orientation="vertical" paginate="no" background="ffffff">
 						<panel name="allergy-1" width="100%" height="50%">
 							<panel name="background" width="100%" height="100%" background="f25a55"></panel>
 							<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
-								<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="Peanuts" />
+								<text name="label" height="20" width="100%" font="HelveticaNeue-Light" size="18" alignment="center" color="#ffffff" text="Warning! This product contains:" />
+								<pager name="redpager" width="100%" height="105" valign="bottom" orientation="vertical" paginate="no" ></pager> 
 							</panel>
 						</panel>
 						<panel name="allergy-2" width="100%" height="50%">
 							<panel name="background" width="100%" height="100%" background="e7b54a"></panel>
 							<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
-								<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="Wheat" />
+								<text name="label" height="20" width="100%" font="HelveticaNeue-Light" size="18" alignment="center" color="#ffffff" text="This product may contain:" />
+
+								<pager name="redpager" width="100%" height="105" valign="bottom" orientation="vertical" paginate="no" ></pager> 
 							</panel>
 						</panel>
 					</pager>
@@ -153,7 +156,7 @@
 				<panel name="ingredients" alias="ALLERGY-MODAL-INGRED" width="100%" height="100%" hidden="yes">
 					<panel name="toolbar" width="100%" height="44" background="457291">
 						<panel name="wrapper" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
-							<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="18" alignment="center" valignment="center" text="PRODUCT NAME"></text>
+							<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="18" alignment="center" valignment="center" text="[param:name]"></text>
 							<panel name="capture" width="66" height="100%" align="left" onclickup="toggle-ingredients">
 								<image name="icon" source="images/icon.forward.white.png" align="left" valign="center" ignoretouches="yes"></image>
 							</panel>
@@ -249,7 +252,7 @@
 						<panel name="profile" width="66" height="100%" align="right" onclickup="toggle-profile">
 							<image name="icon" source="images/icon.user.png" align="right" valign="center"></image>
 						</panel>
-						<textfield name="search-textfield" alias="SEARCH-TEXTFIELD" onreturnkeypressed="searchscan" width="80%" height="100%" align="center" font="HelveticaNeue-Light" size="18" color="ffffff" alignment="left" valignment="center" border="none" placeholder="UPC" alpha="0"></textfield>
+						<textfield name="search-textfield" alias="SEARCH-TEXTFIELD" width="80%" height="100%" align="center" font="HelveticaNeue-Light" size="18" color="ffffff" alignment="left" valignment="center" border="none" placeholder="UPC" alpha="0"></textfield>
 						<panel name="clear" width="66" height="100%" align="right" onclickup="toggle-search" alpha="0">
 							<image name="icon" source="images/icon.close.png" align="right" valign="center"></image>
 						</panel>
@@ -533,16 +536,5 @@
         </action>
 
 		<action name="null" ></action>
-
-        <action name="searchscan">
-                <assign property="var:upc" value="[object:SEARCH-TEXTFIELD.text]"/>
-                <assign property="datasource:food-upc-request.source" value="[template:food-by-upc-url.content]"/>
-                <if lhs="[var:upc]" operator="e" rhs="">
-                     <alert message="Product not found." />
-                     <delete target="SCANWAIT"/>
-                </if>
-        </action>
 	</actions>
-
-
 </wire>
