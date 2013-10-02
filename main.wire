@@ -254,14 +254,13 @@
 				<create class="scanwait" target="BODY"/>
 				<assign property="var:upc" value="[object:SCANCAM.scanvalue]"/>
 				<assign property="datasource:food-upc-request.source" value="[template:food-by-upc-url.content]"/>
-				<if lhs="[var:upc]" operator="e" rhs="">
-					<alert message="Product not found." />
-					<delete target="SCANWAIT"/>
-				</if>
 			</sync>
         </action>
         <action name="upc-found">
             <assign property="datasource:food-allergy-list.data" value="[datasource:food-upc-request.1.productsArray[0]/allergens]"/>
+            <if lhs="[datasource:food-upc-request.0.content]" operator="e" rhs="">
+				<alert message="Product not found." />
+			</if>
         </action>
         <action name="allergy-check">
 			<sync>
