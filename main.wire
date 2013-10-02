@@ -395,7 +395,7 @@
 				</loop>
 				<assign property="var:productname" value="[datasource:food-upc-request.1.productsArray[0]/product_name]" />
 				<assign property="datasource:history-write.query" value="INSERT OR REPLACE INTO history (upc, name, shelf, allergylevel) VALUES ('[datasource:food-upc-request.1.productsArray[0]/upc]','[var:productname]','[datasource:food-upc-request.1.productsArray[0]/shelf]','[var:allergylevel]')" />
-				<alert message="INSERT INTO history (upc, name, shelf, allergylevel) VALUES ('[datasource:food-upc-request.1.productsArray[0]/upc]','[datasource:food-upc-request.1.productsArray[0]/product_name]','[datasource:food-upc-request.1.productsArray[0]/shelf]','[var:allergylevel]')" />
+				<create class="allergy-modal" target="MAIN" />
 			</sync> 
 		</action>
 		<action name="toggle-profile">
