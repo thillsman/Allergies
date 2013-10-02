@@ -180,8 +180,14 @@
 			<pager name="historypager" alias="HISTORYPAGER" width="100%" height="100%" orientation="vertical" paginate="no" background="ffffff"></pager> 
 		</class>
 		<class name="historyitems">
-			<panel name="[param:id]" width="100%" height="40">
-				<text name="product" width="100%" height="100%" color="[param:color]" font="HelveticaNeue-Light" size="14" alignment="center" valignment="center" text="[param:name]" ></text>
+			<panel name="[param:id]" height="70" width="100%" background="#20263c">
+            	<panel name="background" width="100%" height="100%" background="[param:color]"></panel>
+				<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
+            		<text name="product" width="100%" height="100%" color="eeeeee" font="HelveticaNeue-Light" size="16" alignment="left" valignment="center" text="[param:name]" maxlength="40" endcap="..."></text>
+                	<panel name="hr" width="100%" height="1" background="eeeeee" alpha=".1" valign="bottom"></panel>
+            	</panel>
+
+				
 			</panel>
 		</class>
 	</classes>
@@ -264,7 +270,7 @@
 		         		</text>
 					</panel>
 				</panel>
-				<panel name="body" width="100%" height="[eval: [object:BG.height] - [object:TOOLBAR.height]]" valign="bottom" background="20263c"></panel>
+				<panel name="body" alias="HISTORYBODY" width="100%" height="[eval: [object:BG.height] - [object:TOOLBAR.height]]" valign="bottom" background="20263c"></panel>
 			</panel>
 			<!-- share -->
 			<panel name="share" alias="SHARE" width="100%" height="100%" xpos="100%" ypos="34" alpha="0">
@@ -445,7 +451,6 @@
 			<sync>
 				<create class="historypager" target="HISTORYBODY"/>
 				<assign property="var:historycount" value="1" />
-				<alert message="[datasource:history-read.dataSourceResultCount]" />
 				<loop lhs="[datasource:history-read.dataSourceResultCount]" operator="gte" rhs="[var:historycount]">
 					<if lhs="[datasource:history-read.[var:historycount].allergylevel]" operator="e" rhs="2">
 						<assign property="var:allergycolor" value="ff0000" />
