@@ -535,12 +535,17 @@
 		<action name="null" ></action>
 
         <action name="searchscan">
+        	<sync>
                 <assign property="var:upc" value="[object:SEARCH-TEXTFIELD.text]"/>
                 <assign property="datasource:food-upc-request.source" value="[template:food-by-upc-url.content]"/>
                 <if lhs="[var:upc]" operator="e" rhs="">
                      <alert message="Product not found." />
                      <delete target="SCANWAIT"/>
                 </if>
+                <keyboard visible="no" target="SEARCH-TEXTFIELD" />
+                <assign property="object:SEARCH-TEXTFIELD.text" value="" />
+                <play action="toggle-search" />
+            </sync>
         </action>
 	</actions>
 
