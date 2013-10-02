@@ -5,6 +5,8 @@
 		<datasource name="food-allergy-list" source="" query="/" providertype="json" querycomplete="allergy-check"/>
 		<datasource name="sendgrid" source="" query="/" providertype="json"  querycomplete="mailsent" httpmethod="post"/>
         <datasource name="contacts" source="" query="/contacts" providertype="contacts" querycomplete="done"/>
+		<datasource name="history-write" source="sql://db" query="CREATE TABLE IF NOT EXISTS history (id INTEGER PRIMARY KEY AUTOINCREMENT, upc TEXT, name TEXT, shelf TEXT, allergylevel TEXT);" providertype="sql" />
+		<datasource name="history-read" source="sql://db" query="" providertype="sql" querycomplete="listhistory2"/>
 		<texttemplate name="food-session-url"><![CDATA[http://api.foodessentials.com/createsession?uid=[var:uid]&devid=[var:devid]&appid=[var:appid]&f=json&api_key=[var:api_key]]]></texttemplate>
 		<texttemplate name="food-by-upc-url"><![CDATA[http://api.foodessentials.com/labelarray?u=[var:upc]&sid=[var:session]&n=1&s=0&f=json&api_key=[var:api_key]&v=2.0]]></texttemplate>
 		<texttemplate name="post-fields"><![CDATA[api_user=jheryer&api_key=11rarewire11&to=[var:toaddress]&subject=[var:subject]&text=[template:email-template.content]&from=jheryer@rarewire.com]]></texttemplate>
@@ -90,7 +92,7 @@
 			</panel>
 		</class>
 		<class name="scanwait">
-			<panel name="scanwait" ALIAS="SCANWAIT" width="100%" height="100%" background="333333">
+			<panel name="scanwait" alias="SCANWAIT" width="100%" height="100%" background="333333">
 				<panel name="line" style="hdivider" background="eeeeee"></panel>
 				<wait name="wait" width="100%" height="100%" color="eeeeee"></wait>
 				<text name="text" width="100%" height="30" color="eeeeee" font="HelveticaNeue-Light" size="18" alignment="center" text="Retrieving product data..." ypos="55%"></text>
@@ -174,6 +176,14 @@
             	</panel>
             </panel>
         </class>
+		<class name="historypager">
+			<pager name="historypager" alias="HISTORYPAGER" width="100%" height="100%" orientation="vertical" paginate="no" background="ffffff"></pager> 
+		</class>
+		<class name="historyitems">
+			<panel name="[param:id]" width="100%" height="40">
+				<text name="product" width="100%" height="100%" color="[param:color]" font="HelveticaNeue-Light" size="14" alignment="center" valignment="center" text="[param:name]" ></text>
+			</panel>
+		</class>
 	</classes>
 	<main>
 		<panel name="main" alias="MAIN" width="100%" height="100%">
@@ -206,6 +216,20 @@
 						<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="center" color="ffffff" text="Scan History" />
 					</panel>
 				</pager>
+			</panel>
+			<!-- history -->
+			<panel name="history" alias="HISTORY" width="100%" height="100%" xpos="100%" ypos="34" alpha="0">
+				<panel name="background" width="100%" height="100%" background="eeeeee"></panel>
+				<panel name="toolbar" width="100%" height="64" background="232a46">
+					<panel name="wrapper" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
+						<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="Scan History"></text>
+						<text name="back" width="65" height="100%" valign="center" color="aeb2b4" font="HelveticaNeue-Light" size="16" alignment="center" leftinset="14" text="Back" onclickup="toggle-history">
+		            		<image name="icon" source="images/icon.chevron.white.png" valign="center"></image>  
+		         		</text>
+					</panel>
+				</panel>
+				<panel name="body" alias="HISTORYBODY" width="100%" height="504" valign="bottom" background="ffffff">
+				</panel>
 			</panel>
 			<!-- home -->
 			<panel name="bg" alias="BG" width="100%" height="100%" shadowradius="5" shadowopacity=".7">
@@ -346,24 +370,33 @@
 			</sync>
         </action>
         <action name="upc-found">
+        	<alpha value="0" target="SCANWAIT"/>
             <assign property="datasource:food-allergy-list.data" value="[datasource:food-upc-request.1.productsArray[0]/allergens]"/>
         </action>
         <action name="allergy-check">
 			<sync>
 				<assign property="var:alCount" value="0"/>
+				<assign property="var:allergylevel" value="0" />
 				<loop lhs="[datasource:food-allergy-list.dataSourceResultCount]" operator="gt" rhs="[var:alCount]">
 					<if lhs="[preferences:[datasource:food-allergy-list.[var:alCount].allergen_name]]" operator="e" rhs="1">
 						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_value]" operator="e" rhs="2">
 							<alert message="This product contains [datasource:food-allergy-list.[var:alCount].allergen_name]!" />
+							<assign property="var:allergylevel" value="2" />
 						</if>
 						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_value]" operator="e" rhs="1">
 							<alert message="This product may contain [datasource:food-allergy-list.[var:alCount].allergen_name]." />
+							<if lhs="[var:allergylevel]" operator="ne" rhs="2">
+								<assign property="var:allergylevel" value="1" />
+							</if>
 						</if>
 					</if>
 					<!-- <alert message="[datasource:food-allergy-list.[var:alCount].allergen_name] [datasource:food-allergy-list.[var:alCount].allergen_value]"/> -->
 					<assign property="var:alCount" value="[eval: [var:alCount] + 1 ]"/>
 				</loop>
-			</sync>
+				<assign property="var:productname" value="[datasource:food-upc-request.1.productsArray[0]/product_name]" />
+				<assign property="datasource:history-write.query" value="INSERT OR REPLACE INTO history (upc, name, shelf, allergylevel) VALUES ('[datasource:food-upc-request.1.productsArray[0]/upc]','[var:productname]','[datasource:food-upc-request.1.productsArray[0]/shelf]','[var:allergylevel]')" />
+				<alert message="INSERT INTO history (upc, name, shelf, allergylevel) VALUES ('[datasource:food-upc-request.1.productsArray[0]/upc]','[datasource:food-upc-request.1.productsArray[0]/product_name]','[datasource:food-upc-request.1.productsArray[0]/shelf]','[var:allergylevel]')" />
+			</sync> 
 		</action>
 		<action name="toggle-profile">
 			<if lhs="[var:displayProfile]" operator="!=" rhs="1">
@@ -391,6 +424,7 @@
 				<translate align="left" time=".2" target="PROFILE" />
 				<alpha value="0" time=".25" target="PROFILE" />
 				<assign property="var:displayHistory" value="1" />
+				<play action="listhistory" />
 				<else>
 					<translate align="right" time=".3" target="PROFILE" />
 					<translate xpos="100%" ypos="36" time=".3" target="HISTORY" />
@@ -400,6 +434,33 @@
 					<alpha value="1" time="0" delay=".3" target="HISTORY" />
 				</else>
 			</if>		
+		</action>
+		<action name="listhistory">
+			<sync>
+				<assign property="datasource:history-read.query" value="SELECT * FROM history ORDER BY id DESC;" />
+			</sync>
+		</action>
+		<action name="listhistory2">
+			<if lhs="[datasource:history-read.dataSourceResultCount]" operator="ne" rhs="0">
+			<sync>
+				<create class="historypager" target="HISTORYBODY"/>
+				<assign property="var:historycount" value="1" />
+				<alert message="[datasource:history-read.dataSourceResultCount]" />
+				<loop lhs="[datasource:history-read.dataSourceResultCount]" operator="gte" rhs="[var:historycount]">
+					<if lhs="[datasource:history-read.[var:historycount].allergylevel]" operator="e" rhs="2">
+						<assign property="var:allergycolor" value="ff0000" />
+					</if>
+					<if lhs="[datasource:history-read.[var:historycount].allergylevel]" operator="e" rhs="1">
+						<assign property="var:allergycolor" value="999900" />
+					</if>
+					<if lhs="[datasource:history-read.[var:historycount].allergylevel]" operator="e" rhs="0">
+						<assign property="var:allergycolor" value="333333" />
+					</if>
+					<create class="historyitems" target="HISTORYPAGER" id="[datasource:history-read.[var:historycount].id]" name="[datasource:history-read.[var:historycount].name]" color="[var:allergycolor]"/>
+					<assign property="var:historycount" value="[eval:[var:historycount]+1]" />
+				</loop>
+			</sync>
+			</if>
 		</action>
 		<action name="TYLER">
 			<create class="allergy-modal" target="MAIN" />
@@ -432,7 +493,6 @@
 					<assign property="var:allergy-modal-ingred" value="0" />
 				</else>
 			</if>
-
 		</action>
 
 		<action name="toggle-share">
