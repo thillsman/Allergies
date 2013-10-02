@@ -128,12 +128,9 @@
 				<panel name="alert" alias="ALLERGY-MODAL-ALERT" width="100%" height="100%">
 					<panel name="toolbar" width="100%" height="44" background="457291">
 						<panel name="wrapper" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
-							<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="18" alignment="center" valignment="center" text="PRODUCT NAME"></text>
+							<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="fit" maxsize="18" alignment="center" valignment="center" text="[param:name]"></text>
 							<panel name="capture" width="66" height="100%" align="right" onclickup="toggle-ingredients">
 								<image name="icon" source="images/icon.look.png" align="right" valign="center" ignoretouches="yes"></image>
-							</panel>
-							<panel name="clear" width="66" height="100%" align="left" onclickup="clear-allergy-modal" alpha="1" clickuptarget="BG">
-								<image name="icon" source="images/icon.clear.png" align="left" valign="center"></image>
 							</panel>
 						</panel>
 					</panel>
@@ -407,16 +404,18 @@
 			<sync>
 				<assign property="var:alCount" value="0"/>
 				<assign property="var:allergylevel" value="0" />
+				<assign property="var:productname" value="[js: &quot;[datasource:food-upc-request.1.productsArray[0]/product_name]&quot;.replace('\'',''); ]" />
+				<create class="allergy-modal" target="MAIN" name="[var:productname]"/>
 				<loop lhs="[datasource:food-allergy-list.dataSourceResultCount]" operator="gt" rhs="[var:alCount]">
 					<if lhs="[preferences:[datasource:food-allergy-list.[var:alCount].allergen_name]]" operator="e" rhs="1">
 						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_value]" operator="e" rhs="2">
 							<create class="allergyitemred" target="ALLERGIESCONTENTS" item="[datasource:food-allergy-list.[var:alCount].allergen_name]"/>
-							<alert message="This product contains [datasource:food-allergy-list.[var:alCount].allergen_name]!" />
+							<!-- <alert message="This product contains [datasource:food-allergy-list.[var:alCount].allergen_name]!" /> -->
 							<assign property="var:allergylevel" value="2" />
 						</if>
 						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_value]" operator="e" rhs="1">
 							<create class="allergyitemyellow" target="ALLERGIESCONTENTS" item="[datasource:food-allergy-list.[var:alCount].allergen_name]"/>
-							<alert message="This product may contain [datasource:food-allergy-list.[var:alCount].allergen_name]." />
+							<!-- <alert message="This product may contain [datasource:food-allergy-list.[var:alCount].allergen_name]." /> -->
 							<if lhs="[var:allergylevel]" operator="ne" rhs="2">
 								<assign property="var:allergylevel" value="1" />
 							</if>
@@ -429,9 +428,8 @@
 					<!-- <alert message="[datasource:food-allergy-list.[var:alCount].allergen_name] [datasource:food-allergy-list.[var:alCount].allergen_value]"/> -->
 					<assign property="var:alCount" value="[eval: [var:alCount] + 1 ]"/>
 				</loop>
-				<assign property="var:productname" value="[datasource:food-upc-request.1.productsArray[0]/product_name]" />
+				<!-- <alert message="[js: &quot;[datasource:food-upc-request.1.productsArray[0]/product_name]&quot;.replace('\'',''); ]"/> -->
 				<assign property="datasource:history-write.query" value="INSERT OR REPLACE INTO history (upc, name, shelf, allergylevel) VALUES ('[datasource:food-upc-request.1.productsArray[0]/upc]','[var:productname]','[datasource:food-upc-request.1.productsArray[0]/shelf]','[var:allergylevel]')" />
-				<create class="allergy-modal" target="MAIN" />
 			</sync> 
 		</action>
 		<action name="toggle-profile">
