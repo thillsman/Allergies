@@ -116,7 +116,45 @@
 					</panel>
 				</panel>
 				<panel name="searchbody" alias="SEARCHBODY" width="100%" height="504" valign="bottom" background="eeeeee">
-					
+				</panel>
+			</panel>
+		</class>
+		<class name="allergy-modal">
+			<panel name="allergy-modal" alias="ALLERGY-MODAL" width="85%" height="194" align="center" valign="center" clip="yes" cornerradius="5">
+				<panel name="alert" alias="ALLERGY-MODAL-ALERT" width="100%" height="100%">
+					<panel name="toolbar" width="100%" height="44" background="457291">
+						<panel name="wrapper" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
+							<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="18" alignment="center" valignment="center" text="PRODUCT NAME"></text>
+							<panel name="capture" width="66" height="100%" align="right" onclickup="toggle-ingredients">
+								<image name="icon" source="images/icon.look.png" align="right" valign="center" ignoretouches="yes"></image>
+							</panel>
+						</panel>
+					</panel>
+					<pager name="contents" width="100%" height="150" valign="bottom" orientation="vertical" paginate="no" background="ffffff">
+						<panel name="allergy-1" width="100%" height="50%">
+							<panel name="background" width="100%" height="100%" background="f25a55"></panel>
+							<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
+								<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="Peanuts" />
+							</panel>
+						</panel>
+						<panel name="allergy-2" width="100%" height="50%">
+							<panel name="background" width="100%" height="100%" background="e7b54a"></panel>
+							<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
+								<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="Wheat" />
+							</panel>
+						</panel>
+					</pager>
+				</panel>
+				<panel name="ingredients" alias="ALLERGY-MODAL-INGRED" width="100%" height="100%" hidden="yes">
+					<panel name="toolbar" width="100%" height="44" background="457291">
+						<panel name="wrapper" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
+							<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="18" alignment="center" valignment="center" text="PRODUCT NAME"></text>
+							<panel name="capture" width="66" height="100%" align="left" onclickup="toggle-ingredients">
+								<image name="icon" source="images/icon.forward.white.png" align="left" valign="center" ignoretouches="yes"></image>
+							</panel>
+						</panel>
+					</panel>
+					<panel name="contents" width="100%" height="150" valign="bottom" background="ffffff"></panel>
 				</panel>
 			</panel>
 		</class>
@@ -175,13 +213,17 @@
 			<panel name="bg" alias="BG" width="100%" height="100%" shadowradius="5" shadowopacity=".7">
 				<panel name="background" width="100%" height="100%" background="eeeeee"></panel>
 				<panel name="toolbar" alias="TOOLBAR" width="100%" height="64" background="232a46">
-					<panel name="allergypicktitle" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
+					<panel name="wrapper" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
 						<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="APP NAME"></text>
-						<panel name="search" width="66" height="100%" align="left" onclickup="search">
+						<panel name="search" width="66" height="100%" align="left" onclickup="toggle-search">
 							<image name="icon" source="images/icon.search.png" align="left" valign="center"></image>
 						</panel>
 						<panel name="profile" width="66" height="100%" align="right" onclickup="toggle-profile">
 							<image name="icon" source="images/icon.user.png" align="right" valign="center"></image>
+						</panel>
+						<textfield name="search-textfield" alias="SEARCH-TEXTFIELD" width="80%" height="100%" align="center" font="HelveticaNeue-Light" size="18" color="ffffff" alignment="left" valignment="center" border="none" placeholder="UPC" alpha="0"></textfield>
+						<panel name="clear" width="66" height="100%" align="right" onclickup="toggle-search" alpha="0">
+							<image name="icon" source="images/icon.close.png" align="right" valign="center"></image>
 						</panel>
 					</panel>
 				</panel>
@@ -265,30 +307,25 @@
 				<create class="scanwait" target="BODY"/>
 				<assign property="var:upc" value="[object:SCANCAM.scanvalue]"/>
 				<assign property="datasource:food-upc-request.source" value="[template:food-by-upc-url.content]"/>
+				<if lhs="[var:upc]" operator="e" rhs="">
+					<alert message="Product not found." />
+					<delete target="SCANWAIT"/>
+				</if>
 			</sync>
         </action>
         <action name="upc-found">
             <assign property="datasource:food-allergy-list.data" value="[datasource:food-upc-request.1.productsArray[0]/allergens]"/>
-            <if lhs="[datasource:food-upc-request.0.content]" operator="e" rhs="">
-				<alert message="Product not found." />
-			</if>
         </action>
         <action name="allergy-check">
 			<sync>
 				<assign property="var:alCount" value="0"/>
-				<assign property="var:allergylevel" value="1" />
-				<!-- <alert message="[datasource:food-upc-request.0.content]" /> -->
-				<loop lhs="[datasource:food-allergy-list.dataSourceResultCount]" operator="gte" rhs="[var:alCount]">
+				<loop lhs="[datasource:food-allergy-list.dataSourceResultCount]" operator="gt" rhs="[var:alCount]">
 					<if lhs="[preferences:[datasource:food-allergy-list.[var:alCount].allergen_name]]" operator="e" rhs="1">
 						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_value]" operator="e" rhs="2">
 							<alert message="This product contains [datasource:food-allergy-list.[var:alCount].allergen_name]!" />
-							<assign property="var:allergylevel" value="2" />
 						</if>
 						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_value]" operator="e" rhs="1">
 							<alert message="This product may contain [datasource:food-allergy-list.[var:alCount].allergen_name]." />
-							<if lhs="[var:allergylevel]" operator="ne" rhs="2">
-								<assign property="var:allergylevel" value="1 " />
-							</if>
 						</if>
 					</if>
 					<!-- <alert message="[datasource:food-allergy-list.[var:alCount].allergen_name] [datasource:food-allergy-list.[var:alCount].allergen_value]"/> -->
@@ -358,6 +395,37 @@
 					<assign property="var:historycount" value="[eval:[var:historycount]+1]" />
 				</loop>
 			</sync>
+			</if>
+		<action name="TYLER">
+			<create class="allergy-modal" target="MAIN" />
+		</action>
+		<action name="toggle-search">
+			<if lhs="[var:searching]" operator="!=" rhs="1">
+				<alpha value="0" time="0" target="TOOLBAR/wrapper/title" />
+				<alpha value="0" time="0" target="TOOLBAR/wrapper/profile" />
+				<alpha value="1" time="0" target="TOOLBAR/wrapper/search-textfield" />
+				<alpha value="1" time="0" target="TOOLBAR/wrapper/clear" />
+				<assign property="var:searching" value="1" />
+				<else>
+					<alpha value="1" time="0" target="TOOLBAR/wrapper/title" />
+					<alpha value="1" time="0" target="TOOLBAR/wrapper/profile" />
+					<alpha value="0" time="0" target="TOOLBAR/wrapper/search-textfield" />
+					<alpha value="0" time="0" target="TOOLBAR/wrapper/clear" />
+					<assign property="object:TOOLBAR/wrapper/search-textfield.text" value="" />
+					<keyboard visible="no" target="TOOLBAR/wrapper/search-textfield" />
+					<assign property="var:searching" value="0" />
+				</else>
+			</if>
+			
+		</action>
+		<action name="toggle-ingredients">
+			<if lhs="[var:allergy-modal-ingred]" operator="!=" rhs="1">
+				<replace type="flipleft" replacement="ALLERGY-MODAL-INGRED" target="ALLERGY-MODAL-ALERT" time=".25" />
+				<assign property="var:allergy-modal-ingred" value="1" />
+				<else>
+					<replace type="flipright" replacement="ALLERGY-MODAL-ALERT" target="ALLERGY-MODAL-INGRED" time=".25" />
+					<assign property="var:allergy-modal-ingred" value="0" />
+				</else>
 			</if>
 		</action>
 		<action name="null" ></action>
