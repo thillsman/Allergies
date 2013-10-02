@@ -1,6 +1,6 @@
 <wire>
 	<datasources>
-		<datasource name="food-createsession" source="" query="/" providertype="json" querycomplete="create-session"/>
+		<datasource name="create-session" source="" query="/" providertype="json" querycomplete="create-session"/>
 		<datasource name="food-upc-request" source="" query="/" providertype="json" querycomplete="upc-found"/>
 		<datasource name="food-allergy-list" source="" query="/" providertype="json" querycomplete="allergy-check"/>
 		<texttemplate name="food-session-url"><![CDATA[http://api.foodessentials.com/createsession?uid=[var:uid]&devid=[var:devid]&appid=[var:appid]&f=json&api_key=[var:api_key]]]></texttemplate>
@@ -123,11 +123,11 @@
 				<create class="scanner" target="BG"/>
 			</if>
 			<sync>
-				<assign property="var:uid" value="demoUID_01"/>
+				<assign property="var:uid" value="demoUID_01"/> 
 				<assign property="var:devid" value="demoDev_01"/>
 				<assign property="var:appid" value="demoApp_01"/>
 				<assign property="var:api_key" value="e6aeb7mcqbg4pduc8qr637d6"/>
-				<assign property="datasource:food-createsession.source" value="[template:food-session-url.content]"/>
+				<assign property="datasource:create-session.source" value="[template:food-session-url.content]"/>
 			</sync>
 		</action>
 		<action name="slideallergies">
@@ -162,8 +162,8 @@
 			<delete target="SCANNER"/>
 		</action>
 		<action name="create-session">
- 			<if lhs="[datasource:food-createsession.1.session_id]" operator="ne" rhs="">
-				<assign property="var:session" value="[datasource:food-createsession.1.session_id]"/>
+ 			<if lhs="[datasource:create-session.1.session_id]" operator="ne" rhs="">
+				<assign property="var:session" value="[datasource:create-session.1.session_id]"/>
 				<else>
 					<alert message="Unable to obtain api session."/>
 				</else>
@@ -172,12 +172,15 @@
         <action name="sendscan">
 			<sync>
 				<create class="scanwait" target="SCANBODY"/>
-				<assign property="var:upc" value="[object:CAMERA.scanvalue]"/>
+				<assign property="var:upc" value="[object:SCANCAM.scanvalue]"/>
 				<assign property="datasource:food-upc-request.source" value="[template:food-by-upc-url.content]"/>
 			</sync>
         </action>
         <action name="upc-found">
             <assign property="datasource:food-allergy-list.data" value="[datasource:food-upc-request.1.productsArray[0]/allergens]"/>
+            <if lhs="[datasource:food-upc-request.0.content]" operator="e" rhs="">
+            	<alert message="Product not found." />
+            </if>
         </action>
         <action name="allergy-check">
 			<sync>
