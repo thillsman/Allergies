@@ -399,7 +399,8 @@
 					<!-- <alert message="[datasource:food-allergy-list.[var:alCount].allergen_name] [datasource:food-allergy-list.[var:alCount].allergen_value]"/> -->
 					<assign property="var:alCount" value="[eval: [var:alCount] + 1 ]"/>
 				</loop>
-				<assign property="var:productname" value="[datasource:food-upc-request.1.productsArray[0]/product_name]" />
+				<!-- <alert message="[js: &quot;[datasource:food-upc-request.1.productsArray[0]/product_name]&quot;.replace('\'',''); ]"/> -->
+				<assign property="var:productname" value="[js: &quot;[datasource:food-upc-request.1.productsArray[0]/product_name]&quot;.replace('\'',''); ]" />
 				<assign property="datasource:history-write.query" value="INSERT OR REPLACE INTO history (upc, name, shelf, allergylevel) VALUES ('[datasource:food-upc-request.1.productsArray[0]/upc]','[var:productname]','[datasource:food-upc-request.1.productsArray[0]/shelf]','[var:allergylevel]')" />
 				<create class="allergy-modal" target="MAIN" />
 			</sync> 
