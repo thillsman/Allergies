@@ -264,7 +264,7 @@
 		         		</text>
 					</panel>
 				</panel>
-				<panel name="body" width="100%" height="[eval: [object:BG.height] - [object:TOOLBAR.height]]" valign="bottom" background="00ff00"></panel>
+				<panel name="body" width="100%" height="[eval: [object:BG.height] - [object:TOOLBAR.height]]" valign="bottom" background="20263c"></panel>
 			</panel>
 			<!-- share -->
 			<panel name="share" alias="SHARE" width="100%" height="100%" xpos="100%" ypos="34" alpha="0">
