@@ -265,7 +265,7 @@
 					<alert message="[datasource:food-allergy-list.[var:alCount].allergen_name] [datasource:food-allergy-list.[var:alCount].allergen_value]"/>
 					<assign property="var:alCount" value="[eval: [var:alCount] + 1 ]"/>
 				</loop>
-			</sync>
+			</sync> 
 		</action>
 		<action name="toggle-profile">
 			<if lhs="[var:displayProfile]" operator="!=" rhs="1">
