@@ -5,8 +5,8 @@
 		<datasource name="food-allergy-list" source="" query="/" providertype="json" querycomplete="allergy-check"/>
 		<datasource name="sendgrid" source="" query="/" providertype="json"  querycomplete="mailsent" httpmethod="post"/>
         <datasource name="contacts" source="" query="/contacts" providertype="contacts" querycomplete="done"/>
-		<datasource name="history-write" source="sql://db" query="CREATE TABLE IF NOT EXISTS history (id INTEGER PRIMARY KEY AUTOINCREMENT, upc TEXT, name TEXT, shelf TEXT, allergylevel TEXT);" providertype="sql" />
-		<datasource name="history-read" source="sql://db" query="" providertype="sql" querycomplete="listhistory2"/>
+		<datasource name="history-write" source="sql://producthistory" query="CREATE TABLE IF NOT EXISTS history (id INTEGER PRIMARY KEY AUTOINCREMENT, upc TEXT UNIQUE, name TEXT, shelf TEXT, allergylevel TEXT);" providertype="sql" />
+		<datasource name="history-read" source="sql://producthistory" query="" providertype="sql" querycomplete="listhistory2"/>
 		<texttemplate name="food-session-url"><![CDATA[http://api.foodessentials.com/createsession?uid=[var:uid]&devid=[var:devid]&appid=[var:appid]&f=json&api_key=[var:api_key]]]></texttemplate>
 		<texttemplate name="food-by-upc-url"><![CDATA[http://api.foodessentials.com/labelarray?u=[var:upc]&sid=[var:session]&n=1&s=0&f=json&api_key=[var:api_key]&v=2.0]]></texttemplate>
 		<texttemplate name="post-fields"><![CDATA[api_user=jheryer&api_key=11rarewire11&to=[var:toaddress]&subject=[var:subject]&text=[template:email-template.content]&from=jheryer@rarewire.com]]></texttemplate>
