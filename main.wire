@@ -184,9 +184,17 @@
         </action>
         <action name="allergy-check">
 			<sync>
-				<assign property="var:alCount" value="0"/>
-				<loop lhs="[datasource:food-allergy-list.dataSourceResultCount]" operator="gt" rhs="[var:alCount]">
-					<alert message="[datasource:food-allergy-list.[var:alCount].allergen_name] [datasource:food-allergy-list.[var:alCount].allergen_value]"/>
+				<assign property="var:alCount" value="1"/>
+				<loop lhs="[datasource:food-allergy-list.dataSourceResultCount]" operator="gte" rhs="[var:alCount]">
+					<!-- <alert message="[datasource:food-allergy-list.[var:alCount].allergen_name] [datasource:food-allergy-list.[var:alCount].allergen_value]"/> -->
+					<if lhs="[preferences:[datasource:food-allergy-list.[var:alCount].allergen_name]]" operator="e" rhs="1">
+						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_name]" operator="e" rhs="2">
+							<alert message="[datasource:food-allergy-list.[var:alCount].allergen_name] is present! Warning!" />
+						</if>
+						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_name]" operator="e" rhs="1">
+							<alert message="[datasource:food-allergy-list.[var:alCount].allergen_name] may be present." />
+						</if>
+					</if>
 					<assign property="var:alCount" value="[eval: [var:alCount] + 1 ]"/>
 				</loop>
 			</sync>
