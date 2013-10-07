@@ -5,8 +5,9 @@
 		<datasource name="food-allergy-list" source="" query="/" providertype="json" querycomplete="allergy-check"/>
 		<datasource name="sendgrid" source="" query="/" providertype="json"  querycomplete="mailsent" httpmethod="post"/>
         <datasource name="contacts" source="" query="/contacts" providertype="contacts" querycomplete="done"/>
-		<datasource name="history-write" source="sql://db" query="CREATE TABLE IF NOT EXISTS history (id INTEGER PRIMARY KEY AUTOINCREMENT, upc TEXT, name TEXT, shelf TEXT, allergylevel TEXT);" providertype="sql" />
-		<datasource name="history-read" source="sql://db" query="" providertype="sql" querycomplete="listhistory2"/>
+		<datasource name="history-write" source="sql://producthistory" query="CREATE TABLE IF NOT EXISTS history (id INTEGER PRIMARY KEY AUTOINCREMENT, upc TEXT UNIQUE, name TEXT, shelf TEXT, allergylevel TEXT);" providertype="sql" />
+		<datasource name="history-read" source="sql://producthistory" query="" providertype="sql" querycomplete="listhistory2"/>
+		<datasource name="photos" source="" query="Camera Roll" providertype="camera"/>
 		<texttemplate name="food-session-url"><![CDATA[http://api.foodessentials.com/createsession?uid=[var:uid]&devid=[var:devid]&appid=[var:appid]&f=json&api_key=[var:api_key]]]></texttemplate>
 		<texttemplate name="food-by-upc-url"><![CDATA[http://api.foodessentials.com/labelarray?u=[var:upc]&sid=[var:session]&n=1&s=0&f=json&api_key=[var:api_key]&v=2.0]]></texttemplate>
 		<texttemplate name="post-fields"><![CDATA[api_user=jheryer&api_key=11rarewire11&to=[var:toaddress]&subject=[var:subject]&text=[template:email-template.content]&from=jheryer@rarewire.com]]></texttemplate>
@@ -17,7 +18,7 @@
 		<style name="allergyboxstyle" width="25%" height="100%"/>
 		<style name="vdivider" width="1" height="100%" background="333333"/>
 		<style name="hdivider" width="100%" height="1" background="333333"/> 
-		<style name="row-color" background="f75858"  />
+		<style name="row-color" />
 		<platform device="iphone5|iphone5S|iphone5C">
 			<style name="allergyoptionsstyle" width="200%" height="416" valign="bottom" background="eeeeee"/>
 		</platform>
@@ -28,24 +29,15 @@
 	<classes>
 		<class name="allergyboxclass">
 			<panel name="[param:n]" alias="ALIAS-[param:n]" xpos="[param:x]" style="allergyboxstyle" onclickup="[param:action]" _actiondata="[param:actiondata]">
-				<panel name="background" width="100%" height="100%" background="cd3d3c" alpha="0"></panel>
+				<panel name="background" width="100%" height="100%" background="280821" alpha="0"></panel>
 				<image name="icon" source="[param:img]" align="center" valign="center"></image>
 				<text name="text" width="100%" height="fit" bottomof="icon" margin-top="5" color="eeeeee" font="HelveticaNeue-Light" size="14" alignment="center" valignment="center" text="[param:allergy]" ></text>
 			</panel>
 		</class>
 		<class name="allergypicker"> 
 			<panel name="allergypicker" width="100%" height="100%" alias="ALLERGYPICKER">
-				<panel name="curtain" width="100%" height="100%" background="#000000" alpha=".5" ></panel>
-				<panel name="container" alias="ALLERGYPICKER-CONTAINER" width="92%" height="92%" align="center" valign="center" background="ff929a" clip="yes" cornerradius="5">
-					<panel name="toolbar" width="100%" height="44" background="b13535">
-						<panel name="allergypicktitle" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
-							<text name="title" width="80%" height="100%" align="center" color="ffffff" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="My Allergies..."></text>
-							<panel name="capture" width="66" height="100%" align="right" onclickup="toggle-allergies">
-								<image name="icon" source="images/icon.check.png" align="right" valign="center" ignoretouches="yes"></image>
-							</panel>
-						</panel>
-					</panel>
-					<panel name="allergyoptions" alias="ALLERGYOPTIONS" width="200%" height="[eval:[object:ALLERGYPICKER-CONTAINER.height] - 44]" valign="bottom">
+				<panel name="container" alias="ALLERGYPICKER-CONTAINER" width="100%" height="100%" align="center" valign="center" clip="yes" >
+					<panel name="allergyoptions" alias="ALLERGYOPTIONS" width="200%" height="100%" valign="bottom">
 						<panel name="row-1" width="100%" height="25%">
 							<panel name="background" width="100%" height="100%" style="row-color" alpha="1"></panel>
 							<object class="allergyboxclass" n="Cereals" x="0%" img="images/icon.wheat.png" allergy="Cereals" action="saveallergy" actiondata="cereals"/>
@@ -125,8 +117,8 @@
 			</panel>
 		</class>
 		<class name="allergy-modal">
-			<panel name="allergy-modal" alias="ALLERGY-MODAL" width="85%" height="194" align="center" valign="center" clip="yes" cornerradius="5">
-				<panel name="alert" alias="ALLERGY-MODAL-ALERT" width="100%" height="100%">
+			<panel name="allergy-modal" alias="ALLERGY-MODAL" width="100%" height="100%" align="center" valign="center" clip="yes" cornerradius="5">
+				<panel name="alert" alias="ALLERGY-MODAL-ALERT" width="100%" height="100%" background="ffffff">
 					<panel name="toolbar" width="100%" height="44" background="457291">
 						<panel name="wrapper" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
 							<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="fit" maxsize="18" alignment="center" valignment="center" text="[param:name]"></text>
@@ -138,31 +130,50 @@
 							</panel>
 						</panel>
 					</panel>
-					<pager name="contents" width="100%" height="150" valign="bottom" orientation="vertical" paginate="no" background="ffffff">
-						<panel name="allergy-1" width="100%" height="50%">
-							<panel name="background" width="100%" height="100%" background="f25a55"></panel> 
-							<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
-								<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="Peanuts" />
-							</panel>
-						</panel>
-						<panel name="allergy-2" width="100%" height="50%">
-							<panel name="background" width="100%" height="100%" background="e7b54a"></panel>
-							<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
-								<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="Wheat" />
-							</panel>
-						</panel>
+					<pager name="contents" alias="ALLERGIESCONTENTS" width="100%" height="150" valign="bottom" orientation="vertical" paginate="no">
 					</pager>
+					<panel name="youcaneat" alias="YOUCANEAT" width="100%" height="150" valign="bottom" padding-left="10" padding-right="10" alpha="0" background="ffffff">
+						<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="center" valignment="center" color="#333333" text="You can eat this!" />
+					</panel>
 				</panel>
 				<panel name="ingredients" alias="ALLERGY-MODAL-INGRED" width="100%" height="100%" hidden="yes">
 					<panel name="toolbar" width="100%" height="44" background="457291">
 						<panel name="wrapper" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
-							<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="18" alignment="center" valignment="center" text="PRODUCT NAME"></text>
+							<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="fit" maxsize="18" alignment="center" valignment="center" text="[param:name]"></text>
 							<panel name="capture" width="66" height="100%" align="left" onclickup="toggle-ingredients">
 								<image name="icon" source="images/icon.forward.white.png" align="left" valign="center" ignoretouches="yes"></image>
 							</panel>
 						</panel>
 					</panel>
-					<panel name="contents" width="100%" height="150" valign="bottom" background="ffffff"></panel>
+					<panel name="contents" width="100%" height="150" valign="bottom" background="ffffff">
+						<panel name="ingred" alias="INGRED" width="100%" height="150" valign="bottom" padding-left="10" padding-right="10" alpha="1" background="ffffff">
+							<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="fit" maxsize="12" alignment="center" valignment="center" color="#333333" text="[param:ingred]" />
+						</panel>
+					</panel>
+				</panel>
+			</panel>
+		</class>
+		<class name="allergyitemred">
+			<panel name="[param:item]" width="100%" height="30%">
+				<panel name="background" width="100%" height="100%" background="f25a55"></panel> 
+				<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
+					<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="[param:item]" />
+				</panel>
+			</panel>
+		</class>
+		<class name="allergyitemyellow">
+			<panel name="[param:item]" width="100%" height="30%">
+				<panel name="background" width="100%" height="100%" background="e7b54a"></panel>
+				<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
+					<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="[param:item]" />
+				</panel>
+			</panel>
+		</class>
+		<class name="allergyitemgray">
+			<panel name="[param:item]" width="100%" height="30%">
+				<panel name="background" width="100%" height="100%" background="333333"></panel>
+				<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
+					<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="You can eat this!" />
 				</panel>
 			</panel>
 		</class>
@@ -189,44 +200,130 @@
             		<text name="product" width="100%" height="100%" color="eeeeee" font="HelveticaNeue-Light" size="16" alignment="left" valignment="center" text="[param:name]" maxlength="30" endcap="..."></text>
                 	<panel name="hr" width="100%" height="1" background="eeeeee" alpha=".3" valign="bottom"></panel>
             	</panel>
-
-				
 			</panel>
 		</class>
-	</classes>
-	<main>
-		<panel name="main" alias="MAIN" width="100%" height="100%">
-			<image name="blur" source="images/blur.png" height="100%" width="100%"></image>
-			<!-- profile -->
-			<panel name="profile" alias="PROFILE" width="85%" height="100%" align="right" ypos="34" alpha="0">
+		<class name="cameraRoll">
+			<tableview name="cameraRollList" alias="CAMERAROLLTABLE" datasource="photos" height="100%" width="100%" rowheight="80" align="center"  valign="center" orientation="vertical" paginate="no" step="4">
+	            <object name="[param:dataSourceIndex]" class="cameraRoll-4-items" url="[param:url]" lhs="[eval:[datasource:photos.dataSourceResultCount] - [param:dataSourceIndex]]" operator="gte" rhs="4" /> 
+	            <object name="[param:dataSourceIndex]" class="cameraRoll-3-items" url="[param:url]" lhs="[eval:[datasource:photos.dataSourceResultCount] - [param:dataSourceIndex]]" operator="=" rhs="3" />
+	            <object name="[param:dataSourceIndex]" class="cameraRoll-2-items" url="[param:url]" lhs="[eval:[datasource:photos.dataSourceResultCount] - [param:dataSourceIndex]]" operator="=" rhs="2" />
+	            <object name="[param:dataSourceIndex]" class="cameraRoll-1-items" url="[param:url]" lhs="[eval:[datasource:photos.dataSourceResultCount] - [param:dataSourceIndex]]" operator="=" rhs="1" />
+	        </tableview>
+		</class>
+		<class name="cameraRoll-4-items">
+			<panel name="[param:name]" height="100%" width="100%" background="20263c">
+                <panel name="image1" width="25%" height="100%" onclickup="select-cameraRoll-item" clip="yes">
+                	<image name="image" url="[datasource:photos.[param:name].url]" width="100%" align="center" valign="center" />
+                </panel>
+                <panel name="image2" width="25%" height="100%" onclickup="select-cameraRoll-item" clip="yes" rightof="image1">
+                	<image name="image" url="[datasource:photos.[eval:[param:name]+1].url]" width="100%" align="center" valign="center" />
+                </panel>
+                <panel name="image3" width="25%" height="100%" onclickup="select-cameraRoll-item" clip="yes" rightof="image2">
+                	<image name="image" url="[datasource:photos.[eval:[param:name]+2].url]" width="100%" align="center" valign="center" />
+                </panel>
+                <panel name="image4" width="25%" height="100%" onclickup="select-cameraRoll-item" clip="yes" rightof="image3">
+                	<image name="image" url="[datasource:photos.[eval:[param:name]+3].url]" width="100%" align="center" valign="center" />
+                </panel>
+            </panel> 
+		</class>
+		<class name="cameraRoll-3-items">
+			<panel name="[param:name]" height="100%" width="100%" background="20263c">
+                <panel name="image1" width="25%" height="100%" onclickup="select-cameraRoll-item" clip="yes">
+                	<image name="image" url="[datasource:photos.[param:name].url]" width="100%" align="center" valign="center" />
+                </panel>
+                <panel name="image2" width="25%" height="100%" onclickup="select-cameraRoll-item" clip="yes" rightof="image1">
+                	<image name="image" url="[datasource:photos.[eval:[param:name]+1].url]" width="100%" align="center" valign="center" />
+                </panel>
+                <panel name="image3" width="25%" height="100%" onclickup="select-cameraRoll-item" clip="yes" rightof="image2">
+                	<image name="image" url="[datasource:photos.[eval:[param:name]+2].url]" width="100%" align="center" valign="center" />
+                </panel>
+            </panel> 
+		</class>
+		<class name="cameraRoll-2-items">
+			<panel name="[param:name]" height="100%" width="100%" background="20263c">
+                <panel name="image1" width="25%" height="100%" onclickup="select-cameraRoll-item" clip="yes">
+                	<image name="image" url="[datasource:photos.[param:name].url]" width="100%" align="center" valign="center" />
+                </panel>
+                <panel name="image2" width="25%" height="100%" onclickup="select-cameraRoll-item" clip="yes" rightof="image1">
+                	<image name="image" url="[datasource:photos.[eval:[param:name]+1].url]" width="100%" align="center" valign="center" />
+                </panel>
+            </panel> 
+		</class>
+		<class name="cameraRoll-1-items">
+			<panel name="[param:name]" height="100%" width="100%" background="20263c">
+                <panel name="image1" width="25%" height="100%" onclickup="select-cameraRoll-item" clip="yes">
+                	<image name="image" url="[datasource:photos.[param:name].url]" width="100%" align="center" valign="center" />
+                </panel>
+            </panel> 
+		</class>
+		<class name="profile-toc">
+			<panel name="toc" alias="PROFILE-TOC" width="100%" height="100%">
 				<panel name="toolbar" width="80%" height="64" align="center">
-					<!-- <panel name="background" width="100%" height="100%" background="#ffffff" alpha=".05"></panel> -->
 					<panel name="wrapper" width="100%" height="44" valign="bottom">
-						<image name="return" source="images/icon.forward.white.png" align="left" valign="center" onclickup="toggle-profile"></image>
+						<image name="return" source="images/icon.forward.white.png" align="left" valign="center" onclickup="toggle-profile" clickuptarget="BG"></image>
 						<panel name="share" width="66" height="100%" align="right" onclick="prep-share" onclickup="toggle-share">
 							<image name="share" source="images/icon.share.png" align="right" valign="center" ignoretouches="yes"></image>
 						</panel>
 					</panel>
 				</panel> 
 				<panel name="avatar" width="80" height="80" cornerradius="40" bordercolor="ffffff" background="#232a46" borderwidth="3" align="center" bottomof="toolbar" margin-top="20" clip="yes">
-					<image name="image" source="images/kc.png" align="center" valign="center" height="100%"></image>
+					<image name="image" source="userAvatar.png" align="center" valign="center" height="100%" width="100%"></image>
 				</panel>
-				<text name="username" height="fit" width="100%" font="HelveticaNeue-Bold" size="22" alignment="center" color="ffffff" bottomof="avatar" margin-top="20" text="Truman Jones" />
+				<text name="username" height="fit" width="100%" font="HelveticaNeue-Bold" size="22" alignment="center" color="ffffff" bottomof="avatar" margin-top="20" text="[pref:username]" />
 				<pager name="toc" width="90%" height="[eval: [object:PROFILE.height] - [object:PROFILE/avatar.height] - [object:PROFILE/username.height] - 20]" bottomof="username" margin-top="20" orientation="vertical" paginate="no" align="center">
-					<panel name="history" width="100%" height="15%">
+					<panel name="history" width="100%" height="10%">
 						<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="center" color="ffffff" text="Update Profile" />
 						<panel name="hr" width="90%" height="1" align="center" background="ffffff" alpha=".2" valign="bottom"></panel>
 					</panel>
-					<panel name="allergies" width="100%" height="15%" onclickup="toggle-allergies">
+					<panel name="allergies" width="100%" height="10%" onclickup="toggle-allergies">
 						<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="center" color="ffffff" text="Edit Allergies" />
 						<panel name="hr" width="90%" height="1" align="center" background="ffffff" alpha=".2" valign="bottom"></panel>
 					</panel>
-					<panel name="history" width="100%" height="15%" onclick="prep-history" onclickup="toggle-history">
+					<panel name="history" width="100%" height="10%" onclick="prep-history" onclickup="toggle-history">
 						<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="center" color="ffffff" text="Scan History" />
 					</panel>
 				</pager>
-				<image name="rarewire" source="images/rarewire.png" align="center" ypos="80%" alpha=".3"></image>
+				<image name="rarewire" source="images/rarewire.png" align="center" ypos="85%" alpha=".3"></image>
 			</panel>
+		</class>
+		<class name="manage-user">
+			<panel name="content" width="100%" height="100%">
+				<panel name="toolbar" width="100%" height="64" align="center">
+					<panel name="wrapper" width="100%" height="44" valign="bottom" padding-left="20" padding-right="20">
+						<text name="headline" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="center" color="#ffffff" text="My Profile" />
+						<text name="nextStep" width="66" height="100%" valign="center" color="7d7b93" font="HelveticaNeue-Light" size="16" alignment="center" align="right" text="Next" onclickup="set-allergies">
+		            		<image name="next" source="images/icon.step.right.png" align="right" valign="center" ignoretouches="yes"></image> 
+		         		</text>
+					</panel>
+				</panel>
+				<panel name="wrapper" width="100%" height="[eval:[object:MAIN.height] - 64 - 34 ]" bottomof="toolbar" clip="yes">
+					<panel name="personals" width="100%" height="100%">
+						<panel name="wrapper" width="100%" height="100%" padding-left="20" padding-right="20">
+							<panel name="avatar" alias="MANAGE-AVATAR" width="80" height="80" cornerradius="40" bordercolor="ffffff" background="#280821" borderwidth="3" align="center" clip="yes" ypos="20" onclickup="toggle-cameraRoll">
+								<image name="add" source="images/icon.add.png" align="center" valign="center" ignoretouches="yes"></image>
+								<image name="image" source="[param:avatar]" align="center" valign="center" height="100%" width="100%" alpha="0" ignoretouches="yes"></image>
+							</panel>
+							<panel name="name" width="100%" height="40" bottomof="avatar" margin-top="20">
+								<panel name="background" width="100%" height="100%" background="280821" alpha=".3"></panel>
+								<textfield name="name" alias="USERNAME-TEXTFIELD" width="100%" height="100%" font="HelveticaNeue-Light" size="18" color="ffffff" alignment="left" valignment="center" leftinset="10" border="none" onreturnkeypressed="dismiss-keyboard" placeholder="Your Name" text="[param:username]"></textfield>
+							</panel>
+							<text name="disclaimer" height="fit" width="100%" font="HelveticaNeue-Italic" size="14" alignment="center" color="#ffffff" alpha=".4" bottomof="name" margin-top="20" text="*SafeEats is not collecting or sending your personal information or any products you scan to a third party. All information stay local, on your device. " />
+							<image name="rarewire" source="images/rarewire.png" align="center" ypos="85%" alpha=".3"></image>
+						</panel>
+					</panel>
+					<panel name="allergies" width="100%" height="100%" xpos="100%" alpha="0">
+					</panel>
+				</panel>
+			</panel>
+		</class>
+	</classes>
+	<main>
+		<panel name="main" alias="MAIN" width="100%" height="100%">
+			<image name="blur" source="images/blur.png" height="100%" width="100%"></image>
+			<!-- manage user -->
+			<panel name="manage" alias="MANAGE" width="85%" height="[eval:[object:MAIN.height] - 34]" align="right" valign="bottom" alpha="0"></panel>
+			<!-- profile-toc -->
+			<panel name="profile" alias="PROFILE" width="85%" height="[eval:[object:MAIN.height] - 34]" align="right" valign="bottom" alpha="0"></panel>
 			<!-- history -->
 			<panel name="history" alias="HISTORY" width="100%" height="100%" xpos="100%" ypos="34" alpha="0">
 				<panel name="background" width="100%" height="100%" background="eeeeee"></panel>
@@ -262,13 +359,14 @@
 				<panel name="body" alias="BODY" width="100%" height="[eval: [object:BG.height] - [object:TOOLBAR.height]]" valign="bottom" background="00ff00">
 					<camera name="scancam" alias="SCANCAM" height="100%" width="100%" type="barcodescan" face="back" onscan="sendscan"></camera>
 				</panel>
+				<panel name="block" alias="BG-BLOCKER" width="100%" height="100%" alpha="0"></panel>
 			</panel>
 			<!-- history -->
 			<panel name="history" alias="HISTORY" width="100%" height="100%" xpos="100%" ypos="34" alpha="0">
 				<panel name="background" width="100%" height="100%" background="eeeeee"></panel>
 				<panel name="toolbar" width="100%" height="64" background="232a46">
 					<panel name="wrapper" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
-						<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="Scan History"></text>
+						<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="18" alignment="center" valignment="center" text="Scan History"></text>
 						<text name="back" width="65" height="100%" valign="center" color="aeb2b4" font="HelveticaNeue-Light" size="16" alignment="center" leftinset="14" text="Back" onclickup="toggle-history">
 		            		<image name="icon" source="images/icon.chevron.white.png" valign="center"></image>  
 		         		</text>
@@ -276,12 +374,27 @@
 				</panel>
 				<panel name="body" alias="HISTORYBODY" width="100%" height="[eval: [object:BG.height] - [object:TOOLBAR.height]]" valign="bottom" background="20263c"></panel>
 			</panel>
+			<!-- camera roll -->
+			<panel name="cameraRoll" alias="CAMERAROLL" width="100%" height="100%" xpos="100%" ypos="34" alpha="0">
+				<panel name="background" width="100%" height="100%" background="eeeeee"></panel>
+				<panel name="toolbar" width="100%" height="64" background="232a46">
+					<panel name="wrapper" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
+						<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="18" alignment="center" valignment="center" text="Camera Roll"></text>
+						<text name="back" width="65" height="100%" valign="center" color="aeb2b4" font="HelveticaNeue-Light" size="16" alignment="center" leftinset="14" text="Back" onclickup="toggle-cameraRoll">
+		            		<image name="icon" source="images/icon.chevron.white.png" valign="center"></image>  
+		         		</text>
+					</panel>
+				</panel>
+				<panel name="body" alias="CAMERAROLLBODY" width="100%" height="[eval: [object:BG.height] - [object:TOOLBAR.height]]" valign="bottom" background="20263c">
+					<wait name="wait" width="100%" height="100%"></wait>
+				</panel>
+			</panel>
 			<!-- share -->
 			<panel name="share" alias="SHARE" width="100%" height="100%" xpos="100%" ypos="34" alpha="0">
 				<panel name="background" width="100%" height="100%" background="20263c"></panel>
 				<panel name="toolbar" width="100%" height="64" background="232a46">
 					<panel name="wrapper" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
-						<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="Send Allergies To:"></text>
+						<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="18" alignment="center" valignment="center" text="Send Allergies To:"></text>
 						<text name="back" width="65" height="100%" valign="center" color="aeb2b4" font="HelveticaNeue-Light" size="16" alignment="center" leftinset="14" text="Back" onclickup="toggle-share">
 		            		<image name="icon" source="images/icon.chevron.white.png" valign="center"></image>  
 		         		</text>
@@ -298,13 +411,9 @@
 	</main>
 	<actions>
 		<action name="oninit" oninit="yes">
-			<if lhs="[preferences:alreadyopened]" operator="ne" rhs="yes">
-				<create class="allergypicker" target="MAIN"/>
+			<if lhs="[pref:newUser]" operator="ne" rhs="1">
+				<play action="create-user" />
 				<assign property="var:allergypicker" value="1" />
-			</if>
-			<if lhs="[preferences:alreadyopened]" operator="e" rhs="yes">
-				<create class="scanner" target="BG"/>
-				<play action="prep-allergies" />
 			</if>
 			<sync>
 				<assign property="var:uid" value="demoUID_01"/>
@@ -314,19 +423,22 @@
 				<assign property="datasource:food-createsession.source" value="[template:food-session-url.content]"/>
 			</sync>
 			<assign property="datasource:contacts.source" value="*"/>
-		</action>
-		<action name="prep-allergies">
-			<if lhs="[preferences:Cereals]" operator="==" rhs="1">
-				<alpha value="1" time="0" target="ALIAS-Cereals/background" />
-			</if>
-			<if lhs="[preferences:Coconut]" operator="==" rhs="1">
-				<alpha value="1" time="0" target="ALIAS-Coconut/background" />
-			</if>
-			<if lhs="[preferences:Corn]" operator="==" rhs="1">
-				<alpha value="1" time="0" target="ALIAS-Corn/background" />
-			</if>
-			<if lhs="[preferences:Egg]" operator="==" rhs="1">
-				<alpha value="1" time="0" target="ALIAS-Egg/background" />
+		</action> 
+		<action name="set-allergies">
+			<if lhs="[object:USERNAME-TEXTFIELD.text]" operator="!=" rhs="">
+				<assign property="pref:username" value="[object:USERNAME-TEXTFIELD.text]" />
+				<set onclickup="display-scanner" clickuptarget="BG" target="MANAGE/content/toolbar/wrapper/nextStep" />
+				<create class="allergypicker" target="MANAGE/content/wrapper/allergies"/>
+				<assign property="object:MANAGE/content/toolbar/wrapper/headline.text" value="My Allergies" />
+				<assign property="object:MANAGE/content/toolbar/wrapper/nextStep.text" value="Scan" />
+				<translate xpos="-100%" time=".25" target="MANAGE/content/wrapper/personals" />
+				<alpha value="0" time=".25" target="MANAGE/content/wrapper/personals" />
+				<alpha value="1" time=".25" target="MANAGE/content/wrapper/allergies" />
+				<translate align="right" time=".25" target="MANAGE/content/wrapper/allergies" />
+				<keyboard visible="no" target="USERNAME-TEXTFIELD" />
+				<else>
+					<alert message="If you could be so kind to fill out the Name field..." title="Missing Name" />
+				</else>
 			</if>
 		</action>
 		<action name="slideallergies">
@@ -343,7 +455,6 @@
 					<assign property="var:allergypicker" value="0" />
 				</else>
 			</if>
-			
 		</action>
 		<action name="saveallergy">
 			<sync>
@@ -352,10 +463,17 @@
 					<alpha value="0" time=".1" target="background" />
 					<else>
 						<assign property="preferences:[object:name]" value="1" />
-						<alpha value="1" time=".1" target="background" />
+						<alpha value=".4" time=".1" target="background" />
 					</else>
 				</if>
 			</sync>
+		</action>
+		<action name="display-scanner">
+			<translate xpos="0%" ypos="0" time=".3" target="BG" />
+			<alpha value="0" time=".25" target="MANAGE" />
+			<alpha value="0" time="0" target="BG-BLOCKER" />
+			<delete target="MANAGE/content" />
+			<assign property="pref:newUser" value="1" />
 		</action>
 		<action name="showscanner">
 			<create class="scanner" target="BG"/>
@@ -402,13 +520,16 @@
 				<assign property="var:alCount" value="0"/>
 				<assign property="var:allergylevel" value="0" />
 				<assign property="var:productname" value="[js: &quot;[datasource:food-upc-request.1.productsArray[0]/product_name]&quot;.replace('\'',''); ]" />
-				<create class="allergy-modal" target="MAIN" name="[var:productname]"/>
+				<assign property="var:ingred" value="[datasource:food-upc-request.1.productsArray[0]/ingredients]" />
+				<create class="allergy-modal" target="MAIN" name="[var:productname]" ingred="[var:ingred]"/>
 				<loop lhs="[datasource:food-allergy-list.dataSourceResultCount]" operator="gt" rhs="[var:alCount]">
 					<if lhs="[preferences:[datasource:food-allergy-list.[var:alCount].allergen_name]]" operator="e" rhs="1">
 						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_value]" operator="e" rhs="2">
 							<create class="allergyitemred" target="ALLERGIESCONTENTS" item="[datasource:food-allergy-list.[var:alCount].allergen_name]"/>
 							<!-- <alert message="This product contains [datasource:food-allergy-list.[var:alCount].allergen_name]!" /> -->
 							<assign property="var:allergylevel" value="2" />
+							<alpha value="1" time="0" target="ALLERGIESCONTENTS" />
+							<alpha value="0" time="0" target="YOUCANEAT" />
 						</if>
 						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_value]" operator="e" rhs="1">
 							<create class="allergyitemyellow" target="ALLERGIESCONTENTS" item="[datasource:food-allergy-list.[var:alCount].allergen_name]"/>
@@ -416,7 +537,13 @@
 							<if lhs="[var:allergylevel]" operator="ne" rhs="2">
 								<assign property="var:allergylevel" value="1" />
 							</if>
+							<alpha value="1" time="0" target="ALLERGIESCONTENTS" />
+							<alpha value="0" time="0" target="YOUCANEAT" />
 						</if>
+					</if>
+					<if lhs="[var:allergylevel]" operator="e" rhs="0">
+						<alpha value="0" time="0" target="ALLERGIESCONTENTS" />
+						<alpha value="1" time="0" target="YOUCANEAT" />
 					</if>
 					<!-- <alert message="[datasource:food-allergy-list.[var:alCount].allergen_name] [datasource:food-allergy-list.[var:alCount].allergen_value]"/> -->
 					<assign property="var:alCount" value="[eval: [var:alCount] + 1 ]"/>
@@ -427,15 +554,53 @@
 		</action>
 		<action name="toggle-profile">
 			<if lhs="[var:displayProfile]" operator="!=" rhs="1">
+				<create class="profile-toc" target="PROFILE" />
 				<translate xpos="-85%" ypos="34" time=".3" target="BG" />
 				<alpha value="1" time=".25" target="PROFILE" />
 				<assign property="var:displayProfile" value="1" />
 				<else>
-					<translate xpos="0" ypos="0" time=".3" target="BG" />
-					<alpha value="0" time=".25" delay=".3" target="PROFILE" />
-					<assign property="var:displayProfile" value="0" />
+					<sync loop="no" startdelay="0">
+						<translate xpos="0" ypos="0" time=".3" target="BG" />
+						<alpha value="0" time=".25" delay=".3" target="PROFILE" />
+						<assign property="var:displayProfile" value="0" />
+						<delete target="PROFILE-TOC" />
+					</sync>
 				</else>
 			</if>		
+		</action>
+		<action name="create-user">
+			<translate xpos="-85%" ypos="34" time=".3" target="BG" />
+			<alpha value="1" time=".25" target="MANAGE" />
+			<alpha value="1" time="0" target="BG-BLOCKER" />
+			<create class="manage-user" target="MANAGE" />
+		</action>
+		<action name="toggle-cameraRoll">
+			<if lhs="[var:displayCameraRoll]" operator="!=" rhs="1">
+				<sync>
+					<alpha value="1" time="0" target="CAMERAROLL" />
+					<translate xpos="0%" ypos="0" time=".3" target="CAMERAROLL" />
+					<create class="cameraRoll" target="CAMERAROLLBODY" />
+					<assign property="datasource:photos.source" value="adsf" />
+				</sync>
+				<assign property="var:displayCameraRoll" value="1" />
+				<else>
+					<sync loop="no" startdelay="0">
+						<translate xpos="100%" ypos="36" time=".3" target="CAMERAROLL" />
+						<alpha value="0" time=".25" delay=".3" target="CAMERAROLL" />
+						<assign property="var:displayCameraRoll" value="0" />
+						<delete target="CAMERAROLLTABLE" />
+					</sync>
+				</else>
+			</if>				
+		</action>
+		<action name="select-cameraRoll-item">
+			<sync>
+				<capture tofile="userAvatar.png" />
+     			<load source="userAvatar.png" target="MANAGE-AVATAR/image"/>
+     			<alpha value="1" target="MANAGE-AVATAR/image" />
+     			<assign property="pref:avatar" value="1" />
+				<play action="toggle-cameraRoll" />
+			</sync>
 		</action>
 		<action name="prep-history">
 			<translate xpos="85%" time=".2" target="HISTORY" />
@@ -573,6 +738,9 @@
 			<assign property="datasource:sendgrid.postContent" value="[template:post-fields.content]"/>
             <assign property="datasource:sendgrid.source" value="http://sendgrid.com/api/mail.send.json"/>
 			</sync>
+		</action>
+		<action name="dismiss-keyboard">
+			<keyboard visible="no" target="USERNAME-TEXTFIELD" />
 		</action>
 
 		<action name="null" ></action>
