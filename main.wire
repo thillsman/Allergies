@@ -154,7 +154,7 @@
 			</panel>
 		</class>
 		<class name="allergyitemred">
-			<panel name="[param:item]" width="100%" height="30%">
+			<panel name="[param:item]" width="100%" height="40">
 				<panel name="background" width="100%" height="100%" background="f25a55"></panel> 
 				<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
 					<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="[param:item]" />
@@ -162,7 +162,7 @@
 			</panel>
 		</class>
 		<class name="allergyitemyellow">
-			<panel name="[param:item]" width="100%" height="30%">
+			<panel name="[param:item]" width="100%" height="40">
 				<panel name="background" width="100%" height="100%" background="e7b54a"></panel>
 				<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
 					<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="[param:item]" />
@@ -170,7 +170,7 @@
 			</panel>
 		</class>
 		<class name="allergyitemgray">
-			<panel name="[param:item]" width="100%" height="30%">
+			<panel name="[param:item]" width="100%" height="40">
 				<panel name="background" width="100%" height="100%" background="333333"></panel>
 				<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
 					<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="You can eat this!" />
@@ -191,14 +191,21 @@
             </panel>
         </class>
 		<class name="historypager">
-			<pager name="historypager" alias="HISTORYPAGER" width="100%" height="100%" orientation="vertical" paginate="no"></pager> 
+			<panel name="content" alias="HISTORYPAGER" width="100%" height="100%">
+				<panel name="toolbar" width="100%" height="64" align="center">
+					<panel name="wrapper" width="100%" height="44" valign="bottom" padding-left="20" padding-right="20">
+						<text name="back" width="65" height="100%" valign="center" color="7d7b93" font="HelveticaNeue-Light" size="16" alignment="right" align="right" text="Dismiss" onclickup="close-update" clickuptarget="BG"></text>
+					</panel>
+				</panel>
+				<pager name="list" width="100%" height="[eval:[object:MAIN.height] - 64 - 34 ]" valign="bottom" orientation="vertical" paginate="no"></pager>
+			</panel>			 
 		</class>
-		<class name="historyitems">
+		<class name="historyitems"> 
 			<panel name="[param:id]" height="70" width="100%" background="#20263c">
-            	<panel name="background" width="100%" height="100%" background="[param:color]"></panel>
+            	<panel name="background" width="100%" height="100%" background="[param:color]" alpha=".8"></panel>
 				<panel name="wrapper" width="100%" height="100%" padding-left="30" padding-right="30">
             		<text name="product" width="100%" height="100%" color="eeeeee" font="HelveticaNeue-Light" size="16" alignment="left" valignment="center" text="[param:name]" maxlength="30" endcap="..."></text>
-                	<panel name="hr" width="100%" height="1" background="eeeeee" alpha=".3" valign="bottom"></panel>
+                	<!-- <panel name="hr" width="100%" height="1" background="eeeeee" alpha=".3" valign="bottom"></panel> -->
             	</panel>
 			</panel>
 		</class>
@@ -271,22 +278,50 @@
 				</panel>
 				<text name="username" height="fit" width="100%" font="HelveticaNeue-Bold" size="22" alignment="center" color="ffffff" bottomof="avatar" margin-top="20" text="[pref:username]" />
 				<pager name="toc" width="90%" height="[eval: [object:PROFILE.height] - [object:PROFILE/avatar.height] - [object:PROFILE/username.height] - 20]" bottomof="username" margin-top="20" orientation="vertical" paginate="no" align="center">
-					<panel name="history" width="100%" height="10%">
+					<panel name="profile" width="100%" height="10%" onclickup="edit-personals">
 						<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="center" color="ffffff" text="Update Profile" />
 						<panel name="hr" width="90%" height="1" align="center" background="ffffff" alpha=".2" valign="bottom"></panel>
 					</panel>
-					<panel name="allergies" width="100%" height="10%" onclickup="toggle-allergies">
+					<panel name="allergies" width="100%" height="10%" onclickup="edit-allergies">
 						<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="center" color="ffffff" text="Edit Allergies" />
 						<panel name="hr" width="90%" height="1" align="center" background="ffffff" alpha=".2" valign="bottom"></panel>
 					</panel>
-					<panel name="history" width="100%" height="10%" onclick="prep-history" onclickup="toggle-history">
+					<panel name="history" width="100%" height="10%" onclick="prep-history" onclickup="view-history">
 						<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="center" color="ffffff" text="Scan History" />
 					</panel>
 				</pager>
 				<image name="rarewire" source="images/rarewire.png" align="center" ypos="85%" alpha=".3"></image>
 			</panel>
 		</class>
-		<class name="manage-user">
+		<class name="personals">
+			<panel name="wrapper" width="100%" height="100%" padding-left="20" padding-right="20">
+				<panel name="avatar" alias="CREATE-AVATAR" width="80" height="80" cornerradius="40" bordercolor="ffffff" background="#280821" borderwidth="3" align="center" clip="yes" ypos="20" onclickup="toggle-cameraRoll">
+					<image name="add" source="images/icon.add.png" align="center" valign="center" ignoretouches="yes"></image>
+					<image name="image" source="[param:avatar]" align="center" valign="center" height="100%" width="100%" alpha="0" ignoretouches="yes"></image>
+				</panel>
+				<panel name="name" width="100%" height="40" bottomof="avatar" margin-top="20">
+					<panel name="background" width="100%" height="100%" background="280821" alpha=".3"></panel>
+					<textfield name="name" alias="USERNAME-TEXTFIELD" width="100%" height="100%" font="HelveticaNeue-Light" size="18" color="ffffff" alignment="left" valignment="center" leftinset="10" border="none" onreturnkeypressed="dismiss-keyboard" placeholder="Your Name" text="[param:username]"></textfield>
+				</panel>
+				<text name="disclaimer" height="fit" width="100%" font="HelveticaNeue-Italic" size="14" alignment="center" color="#ffffff" alpha=".4" bottomof="name" margin-top="20" text="*SafeEats is not collecting or sending your personal information or any products you scan to a third party. All information stay local, on your device. " />
+				<image name="rarewire" source="images/rarewire.png" align="center" ypos="85%" alpha=".3"></image>
+			</panel>
+		</class>
+		<class name="mod-user">
+			<panel name="content" width="100%" height="100%">
+				<panel name="toolbar" width="100%" height="64" align="center">
+					<panel name="wrapper" width="100%" height="44" valign="bottom" padding-left="20" padding-right="20">
+						<!-- <text name="cancel" width="66" height="100%" valign="center" color="7d7b93" font="HelveticaNeue-Light" size="16" alignment="left" align="left" text="Cancel" onclickup="close-update" clickuptarget="BG"></text> -->
+						<text name="save" width="66" height="100%" valign="center" color="7d7b93" font="HelveticaNeue-Light" size="16" alignment="right" align="right" text="Save" onclickup="update-profile" clickuptarget="BG"></text>
+					</panel>
+				</panel>
+				<panel name="wrapper" width="100%" height="[eval:[object:MAIN.height] - 64 - 34 ]" bottomof="toolbar" clip="yes">
+					<panel name="personals" width="100%" height="100%"></panel>
+					<panel name="allergies" width="100%" height="100%" xpos="100%" alpha="0"></panel>
+				</panel>
+			</panel>
+		</class>
+		<class name="create-user">
 			<panel name="content" width="100%" height="100%">
 				<panel name="toolbar" width="100%" height="64" align="center">
 					<panel name="wrapper" width="100%" height="44" valign="bottom" padding-left="20" padding-right="20">
@@ -297,20 +332,7 @@
 					</panel>
 				</panel>
 				<panel name="wrapper" width="100%" height="[eval:[object:MAIN.height] - 64 - 34 ]" bottomof="toolbar" clip="yes">
-					<panel name="personals" width="100%" height="100%">
-						<panel name="wrapper" width="100%" height="100%" padding-left="20" padding-right="20">
-							<panel name="avatar" alias="MANAGE-AVATAR" width="80" height="80" cornerradius="40" bordercolor="ffffff" background="#280821" borderwidth="3" align="center" clip="yes" ypos="20" onclickup="toggle-cameraRoll">
-								<image name="add" source="images/icon.add.png" align="center" valign="center" ignoretouches="yes"></image>
-								<image name="image" source="[param:avatar]" align="center" valign="center" height="100%" width="100%" alpha="0" ignoretouches="yes"></image>
-							</panel>
-							<panel name="name" width="100%" height="40" bottomof="avatar" margin-top="20">
-								<panel name="background" width="100%" height="100%" background="280821" alpha=".3"></panel>
-								<textfield name="name" alias="USERNAME-TEXTFIELD" width="100%" height="100%" font="HelveticaNeue-Light" size="18" color="ffffff" alignment="left" valignment="center" leftinset="10" border="none" onreturnkeypressed="dismiss-keyboard" placeholder="Your Name" text="[param:username]"></textfield>
-							</panel>
-							<text name="disclaimer" height="fit" width="100%" font="HelveticaNeue-Italic" size="14" alignment="center" color="#ffffff" alpha=".4" bottomof="name" margin-top="20" text="*SafeEats is not collecting or sending your personal information or any products you scan to a third party. All information stay local, on your device. " />
-							<image name="rarewire" source="images/rarewire.png" align="center" ypos="85%" alpha=".3"></image>
-						</panel>
-					</panel>
+					<panel name="personals" width="100%" height="100%"></panel>
 					<panel name="allergies" width="100%" height="100%" xpos="100%" alpha="0">
 					</panel>
 				</panel>
@@ -320,10 +342,10 @@
 	<main>
 		<panel name="main" alias="MAIN" width="100%" height="100%">
 			<image name="blur" source="images/blur.png" height="100%" width="100%"></image>
-			<!-- manage user -->
-			<panel name="manage" alias="MANAGE" width="85%" height="[eval:[object:MAIN.height] - 34]" align="right" valign="bottom" alpha="0"></panel>
 			<!-- profile-toc -->
 			<panel name="profile" alias="PROFILE" width="85%" height="[eval:[object:MAIN.height] - 34]" align="right" valign="bottom" alpha="0"></panel>
+			<!-- create user -->
+			<panel name="create" alias="CREATE" width="85%" height="[eval:[object:MAIN.height] - 34]" align="right" valign="bottom" alpha="0"></panel>
 			<!-- history -->
 			<panel name="history" alias="HISTORY" width="100%" height="100%" xpos="100%" ypos="34" alpha="0">
 				<panel name="background" width="100%" height="100%" background="eeeeee"></panel>
@@ -345,14 +367,14 @@
 					<panel name="wrapper" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
 						<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="20" alignment="center" valignment="center" text="SafeEats"></text>
 						<panel name="search" width="66" height="100%" align="left" onclickup="toggle-search">
-							<image name="icon" source="images/icon.search.png" align="left" valign="center"></image>
+							<image name="icon" source="images/icon.search.png" align="left" valign="center" ignoretouches="yes"></image>
 						</panel>
 						<panel name="profile" width="66" height="100%" align="right" onclickup="toggle-profile">
-							<image name="icon" source="images/icon.user.png" align="right" valign="center"></image>
+							<image name="icon" source="images/icon.user.png" align="right" valign="center" ignoretouches="yes"></image>
 						</panel>
 						<textfield name="search-textfield" alias="SEARCH-TEXTFIELD" width="80%" height="100%" align="center" font="HelveticaNeue-Light" size="18" color="ffffff" alignment="left" valignment="center" border="none" placeholder="UPC" alpha="0"></textfield>
 						<panel name="clear" width="66" height="100%" align="right" onclickup="toggle-search" alpha="0">
-							<image name="icon" source="images/icon.close.png" align="right" valign="center"></image>
+							<image name="icon" source="images/icon.close.png" align="right" valign="center" ignoretouches="yes"></image>
 						</panel>
 					</panel>
 				</panel>
@@ -380,7 +402,7 @@
 				<panel name="toolbar" width="100%" height="64" background="232a46">
 					<panel name="wrapper" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
 						<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="18" alignment="center" valignment="center" text="Camera Roll"></text>
-						<text name="back" width="65" height="100%" valign="center" color="aeb2b4" font="HelveticaNeue-Light" size="16" alignment="center" leftinset="14" text="Back" onclickup="toggle-cameraRoll">
+						<text name="back" width="65" height="100%" valign="center" color="aeb2b4" font="HelveticaNeue-Light" size="16" alignment="left" leftinset="15" text="Back" onclickup="toggle-cameraRoll">
 		            		<image name="icon" source="images/icon.chevron.white.png" valign="center"></image>  
 		         		</text>
 					</panel>
@@ -395,7 +417,7 @@
 				<panel name="toolbar" width="100%" height="64" background="232a46">
 					<panel name="wrapper" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
 						<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="18" alignment="center" valignment="center" text="Send Allergies To:"></text>
-						<text name="back" width="65" height="100%" valign="center" color="aeb2b4" font="HelveticaNeue-Light" size="16" alignment="center" leftinset="14" text="Back" onclickup="toggle-share">
+						<text name="back" width="65" height="100%" valign="center" color="aeb2b4" font="HelveticaNeue-Light" size="16" alignment="left" leftinset="15" text="Back" onclickup="toggle-share">
 		            		<image name="icon" source="images/icon.chevron.white.png" valign="center"></image>  
 		         		</text>
 					</panel>
@@ -427,14 +449,14 @@
 		<action name="set-allergies">
 			<if lhs="[object:USERNAME-TEXTFIELD.text]" operator="!=" rhs="">
 				<assign property="pref:username" value="[object:USERNAME-TEXTFIELD.text]" />
-				<set onclickup="display-scanner" clickuptarget="BG" target="MANAGE/content/toolbar/wrapper/nextStep" />
-				<create class="allergypicker" target="MANAGE/content/wrapper/allergies"/>
-				<assign property="object:MANAGE/content/toolbar/wrapper/headline.text" value="My Allergies" />
-				<assign property="object:MANAGE/content/toolbar/wrapper/nextStep.text" value="Scan" />
-				<translate xpos="-100%" time=".25" target="MANAGE/content/wrapper/personals" />
-				<alpha value="0" time=".25" target="MANAGE/content/wrapper/personals" />
-				<alpha value="1" time=".25" target="MANAGE/content/wrapper/allergies" />
-				<translate align="right" time=".25" target="MANAGE/content/wrapper/allergies" />
+				<set onclickup="display-scanner" clickuptarget="BG" target="CREATE/content/toolbar/wrapper/nextStep" />
+				<create class="allergypicker" target="CREATE/content/wrapper/allergies"/>
+				<assign property="object:CREATE/content/toolbar/wrapper/headline.text" value="My Allergies" />
+				<assign property="object:CREATE/content/toolbar/wrapper/nextStep.text" value="Scan" />
+				<translate xpos="-100%" time=".25" target="CREATE/content/wrapper/personals" />
+				<alpha value="0" time=".25" target="CREATE/content/wrapper/personals" />
+				<alpha value="1" time=".25" target="CREATE/content/wrapper/allergies" />
+				<translate align="right" time=".25" target="CREATE/content/wrapper/allergies" />
 				<keyboard visible="no" target="USERNAME-TEXTFIELD" />
 				<else>
 					<alert message="If you could be so kind to fill out the Name field..." title="Missing Name" />
@@ -470,9 +492,9 @@
 		</action>
 		<action name="display-scanner">
 			<translate xpos="0%" ypos="0" time=".3" target="BG" />
-			<alpha value="0" time=".25" target="MANAGE" />
+			<alpha value="0" time=".25" target="CREATE" />
 			<alpha value="0" time="0" target="BG-BLOCKER" />
-			<delete target="MANAGE/content" />
+			<delete target="CREATE/content" />
 			<assign property="pref:newUser" value="1" />
 		</action>
 		<action name="showscanner">
@@ -570,9 +592,12 @@
 		</action>
 		<action name="create-user">
 			<translate xpos="-85%" ypos="34" time=".3" target="BG" />
-			<alpha value="1" time=".25" target="MANAGE" />
+			<alpha value="1" time=".25" target="CREATE" />
 			<alpha value="1" time="0" target="BG-BLOCKER" />
-			<create class="manage-user" target="MANAGE" />
+			<sync>
+				<create class="create-user" target="CREATE" />
+				<create class="personals" target="CREATE/content/wrapper/personals" />
+			</sync>
 		</action>
 		<action name="toggle-cameraRoll">
 			<if lhs="[var:displayCameraRoll]" operator="!=" rhs="1">
@@ -596,11 +621,103 @@
 		<action name="select-cameraRoll-item">
 			<sync>
 				<capture tofile="userAvatar.png" />
-     			<load source="userAvatar.png" target="MANAGE-AVATAR/image"/>
-     			<alpha value="1" target="MANAGE-AVATAR/image" />
+     			<load source="userAvatar.png" target="CREATE-AVATAR/image"/>
+     			<alpha value="1" target="CREATE-AVATAR/image" />
      			<assign property="pref:avatar" value="1" />
 				<play action="toggle-cameraRoll" />
 			</sync>
+		</action>
+		<action name="edit-personals">
+			<!-- this animates and turns off things in profile to act at toolbar headline -->
+			<alpha value="1" time="0" target="BG-BLOCKER" />
+			<assign property="var:profileState" value="personals" />
+			<translate ypos="-32%" time=".25" target="PROFILE" />
+			<alpha value="0" time=".25" target="PROFILE-TOC/rarewire" />
+			<alpha value="0" time=".25" target="PROFILE-TOC/toc/allergies" />
+			<alpha value="0" time=".25" target="PROFILE-TOC/toc/history" />
+			<alpha value="0" time=".25" target="PROFILE-TOC/toc/profile/hr" />
+			<alpha value="0" time=".25" target="PROFILE-TOC/username" />
+			<sync loop="no" startdelay="0">
+				<create class="mod-user" target="CREATE" />
+     			<create class="personals" avatar="userAvatar.png" username="[pref:username]" target="CREATE/content/wrapper/personals" />
+     			<alpha value="1" target="CREATE-AVATAR/image" />
+				<alpha value="1" time=".15" delay=".2" target="CREATE" />
+			</sync>
+		</action>
+		<action name="edit-allergies">
+			<!-- this animates and turns off things in profile to act at toolbar headline -->
+			<alpha value="1" time="0" target="BG-BLOCKER" />
+			<assign property="var:profileState" value="allergies" />
+			<translate ypos="-41%" time=".25" target="PROFILE" />
+			<alpha value="0" time=".25" target="PROFILE-TOC/rarewire" />
+			<alpha value="0" time=".25" target="PROFILE-TOC/toc/profile" />
+			<alpha value="0" time=".25" target="PROFILE-TOC/toc/history" />
+			<alpha value="0" time=".25" target="PROFILE-TOC/toc/allergies/hr" />
+			<alpha value="0" time=".25" target="PROFILE-TOC/username" />
+			<sync loop="no" startdelay="0">
+				<create class="mod-user" target="CREATE" />
+     			<create class="allergypicker" target="CREATE/content/wrapper/allergies" />
+     			<translate align="right" time="0" target="CREATE/content/wrapper/allergies" />
+     			<alpha value="1" time="0" target="CREATE/content/wrapper/allergies" />
+				<alpha value="1" time=".15" delay=".2" target="CREATE" />
+			</sync>
+		</action>
+		<action name="view-history">
+			<!-- this animates and turns off things in profile to act at toolbar headline -->
+			<alpha value="1" time="0" target="BG-BLOCKER" />
+			<assign property="var:profileState" value="history" />
+			<translate ypos="-50%" time=".25" target="PROFILE" />
+			<alpha value="0" time=".25" target="PROFILE-TOC/rarewire" />
+			<alpha value="0" time=".25" target="PROFILE-TOC/toc/profile" />
+			<alpha value="0" time=".25" target="PROFILE-TOC/toc/allergies" />
+			<alpha value="0" time=".25" target="PROFILE-TOC/toc/history/hr" />
+			<alpha value="0" time=".25" target="PROFILE-TOC/username" />
+			<sync loop="no" startdelay="0">
+				<play action="listhistory" />
+			</sync>
+		</action>
+		<action name="update-profile">
+			<if lhs="[var:profileState]" operator="==" rhs="personals">
+				<assign property="pref:username" value="[object:USERNAME-TEXTFIELD.text]" />
+				<!-- update the curent profile toc active -->
+				<assign property="object:PROFILE-TOC/username.text" value="[pref:username]" />
+				<load source="userAvatar.png" target="PROFILE-TOC/avatar/image" />
+				<play action="close-update" />
+			</if>
+			<if lhs="[var:profileState]" operator="==" rhs="allergies">
+				<play action="close-update" />
+			</if>
+		</action>
+		<action name="close-update">
+			<if lhs="[var:profileState]" operator="==" rhs="personals">
+				<!-- animate back to profile toc -->
+				<alpha value=".3" time=".25" target="PROFILE-TOC/rarewire" />
+				<alpha value="1" time=".25" target="PROFILE-TOC/toc/allergies" />
+				<alpha value="1" time=".25" target="PROFILE-TOC/toc/history" />
+				<alpha value=".2" time=".25" target="PROFILE-TOC/toc/profile/hr" />
+				<alpha value="1" time=".25" target="PROFILE-TOC/username" />
+			</if>
+			<if lhs="[var:profileState]" operator="==" rhs="allergies">
+				<!-- animate back to profile toc -->
+				<alpha value=".3" time=".25" target="PROFILE-TOC/rarewire" />
+				<alpha value="1" time=".25" target="PROFILE-TOC/toc/profile" />
+				<alpha value="1" time=".25" target="PROFILE-TOC/toc/history" />
+				<alpha value=".2" time=".25" target="PROFILE-TOC/toc/allergies/hr" />
+				<alpha value="1" time=".25" target="PROFILE-TOC/username" />
+			</if>
+			<if lhs="[var:profileState]" operator="==" rhs="history">
+				<!-- animate back to profile toc -->
+				<alpha value=".3" time=".25" target="PROFILE-TOC/rarewire" />
+				<alpha value="1" time=".25" target="PROFILE-TOC/toc/profile" />
+				<alpha value="1" time=".25" target="PROFILE-TOC/toc/allergies" />
+				<alpha value=".2" time=".25" target="PROFILE-TOC/toc/history/hr" />
+				<alpha value="1" time=".25" target="PROFILE-TOC/username" />
+			</if>
+			<assign property="var:profileState" value="" />
+			<alpha value="0" time=".15" target="CREATE" />
+			<delete target="CREATE/content" />
+			<translate valign="bottom" time=".25" target="PROFILE" />
+			<alpha value="0" time="0" target="BG-BLOCKER" />
 		</action>
 		<action name="prep-history">
 			<translate xpos="85%" time=".2" target="HISTORY" />
@@ -635,7 +752,8 @@
 		<action name="listhistory2">
 			<if lhs="[datasource:history-read.dataSourceResultCount]" operator="ne" rhs="0">
 			<sync>
-				<create class="historypager" target="HISTORYBODY"/>
+				<create class="historypager" target="CREATE"/>
+				<alpha value="1" time=".15" delay=".25" target="CREATE" />
 				<assign property="var:historycount" value="1" />
 				<loop lhs="[datasource:history-read.dataSourceResultCount]" operator="gte" rhs="[var:historycount]">
 					<if lhs="[datasource:history-read.[var:historycount].allergylevel]" operator="e" rhs="2">
@@ -647,7 +765,7 @@
 					<if lhs="[datasource:history-read.[var:historycount].allergylevel]" operator="e" rhs="0">
 						<assign property="var:allergycolor" value="5c7980" />
 					</if>
-					<create class="historyitems" target="HISTORYPAGER" id="[datasource:history-read.[var:historycount].id]" name="[datasource:history-read.[var:historycount].name]" color="[var:allergycolor]"/>
+					<create class="historyitems" target="HISTORYPAGER/list" id="[datasource:history-read.[var:historycount].id]" name="[datasource:history-read.[var:historycount].name]" color="[var:allergycolor]"/>
 					<assign property="var:historycount" value="[eval:[var:historycount]+1]" />
 				</loop>
 			</sync>
