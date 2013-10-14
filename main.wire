@@ -15,7 +15,7 @@
         <texttemplate name="allergy-list"><![CDATA[Cereals,Coconut,Peanuts,Sesame seeds,Corn,Egg,Shellfish,Soybean,Fish,Gluten,Sulfites,Tree nuts,Milk,Wheat]]></texttemplate>
 	</datasources>
 	<styles>
-		<style name="allergyboxstyle" width="25%" height="100%"/>
+		<style name="allergyboxstyle" width="100%" height="64"/>
 		<style name="vdivider" width="1" height="100%" background="333333"/>
 		<style name="hdivider" width="100%" height="1" background="333333"/> 
 		<style name="row-color" />
@@ -28,45 +28,34 @@
 	</styles>
 	<classes>
 		<class name="allergyboxclass">
-			<panel name="[param:n]" alias="ALIAS-[param:n]" xpos="[param:x]" style="allergyboxstyle" onclickup="[param:action]" _actiondata="[param:actiondata]">
-				<panel name="background" width="100%" height="100%" background="280821" alpha="0"></panel>
-				<image name="icon" source="[param:img]" align="center" valign="center"></image>
-				<text name="text" width="100%" height="fit" bottomof="icon" margin-top="5" color="eeeeee" font="HelveticaNeue-Light" size="14" alignment="center" valignment="center" text="[param:allergy]" ></text>
+			<panel name="[param:n]" alias="ALIAS-[param:n]" style="allergyboxstyle" onclickup="[eval: '[preferences:[param:n]-severity]' == 'severe' ? 'set-severity' : 'set-allergy']" _actiondata="[param:actiondata]">
+				<panel name="background" width="[eval: '[preferences:[param:n]]' == '1' ? '100%' : '10']" height="63" background="[eval:getAllergyBackground('[preferences:[param:n]]','[preferences:[param:n]-severity]')]" alpha="[eval: '[preferences:[param:n]]' == '1' ? '1' : '.2']"></panel><!-- purple:7d7b93 red:f25a55 yellow:e7b54a -->
+				<panel name="wrapper" width="100%" height="100%" padding-right="20" padding-left="20">
+					<text name="text" width="80%" height="100%" rightof="icon" leftinset="40" color="eeeeee" font="HelveticaNeue-Light" size="18" alignment="left" valignment="left" text="[param:allergy]">
+						<!-- <image name="icon" source="[param:img]" height="60%" align="left" valign="center"></image> -->
+					</text>
+				</panel>
 			</panel>
 		</class>
 		<class name="allergypicker"> 
 			<panel name="allergypicker" width="100%" height="100%" alias="ALLERGYPICKER">
 				<panel name="container" alias="ALLERGYPICKER-CONTAINER" width="100%" height="100%" align="center" valign="center" clip="yes" >
-					<panel name="allergyoptions" alias="ALLERGYOPTIONS" width="200%" height="100%" valign="bottom">
-						<panel name="row-1" width="100%" height="25%">
-							<panel name="background" width="100%" height="100%" style="row-color" alpha="1"></panel>
-							<object class="allergyboxclass" n="Cereals" x="0%" img="images/icon.wheat.png" allergy="Cereals" action="saveallergy" actiondata="cereals"/>
-							<object class="allergyboxclass" n="Coconut" x="25%" img="images/icon.coconut.png" allergy="Coconut" action="saveallergy" actiondata="coconut"/>
-							<object class="allergyboxclass" n="Peanuts" x="50%" img="images/icon.peanut.png" allergy="Peanuts" action="saveallergy" actiondata="peanuts"/>
-							<object class="allergyboxclass" n="Sesame seeds" x="75%" img="images/icon.tree.png" allergy="Sesame seeds" action="saveallergy" actiondata="sesameseeds"/>
-						</panel>
-						<panel name="row-2" width="100%" height="25%" bottomof="row-1">
-							<panel name="background" width="100%" height="100%" style="row-color" alpha=".9"></panel>
-							<object class="allergyboxclass" n="Corn" x="0%" img="images/icon.corn.png" allergy="Corn" action="saveallergy" actiondata="corn"/>
-							<object class="allergyboxclass" n="Egg" x="25%" img="images/icon.egg.png" allergy="Egg" action="saveallergy" actiondata="egg"/>
-							<object class="allergyboxclass" n="Shellfish" x="50%" img="images/icon.shell.png" allergy="Shellfish" action="saveallergy" actiondata="shellfish"/>
-							<object class="allergyboxclass" n="Soybean" x="75%" img="images/icon.soy.png" allergy="Soybean" action="saveallergy" actiondata="soybean"/>
-						</panel>
-						<panel name="row-3" width="100%" height="25%" bottomof="row-2">
-							<panel name="background" width="100%" height="100%" style="row-color" alpha=".8"></panel>
-							<object class="allergyboxclass" n="Fish" x="0%" img="images/icon.fish.png" allergy="Fish" action="saveallergy" actiondata="fish"/>
-							<object class="allergyboxclass" n="Gluten" x="25%" img="images/icon.gluten.png" allergy="Gluten" action="saveallergy" actiondata="gluten"/>
-							<object class="allergyboxclass" n="Sulfites" x="50%" img="images/icon.sulfites.png" allergy="Sulfites" action="saveallergy" actiondata="sulfites"/>
-							<object class="allergyboxclass" n="Tree nuts" x="75%" img="images/icon.treenuts.png" allergy="Tree nuts" action="saveallergy" actiondata="treenuts"/>
-						</panel>
-						<panel name="row-4" width="100%" height="25%" bottomof="row-3">
-							<panel name="background" width="100%" height="100%" style="row-color" alpha=".7"></panel>
-							<object class="allergyboxclass" n="Milk" x="0%" img="images/icon.milk.png" allergy="Milk" action="saveallergy" actiondata="milk"/>
-							<object class="allergyboxclass" n="forward" x="25%" img="images/icon.more.png" allergy="More" action="slideallergies" actiondata="-100%"/>
-							<object class="allergyboxclass" n="backward" x="50%" img="images/icon.more.png" allergy="Less" action="slideallergies" actiondata="0%"/>
-							<object class="allergyboxclass" n="Wheat" x="75%" img="images/icon.wheat.png" allergy="Wheat" action="saveallergy" actiondata="wheat"/>
-						</panel>
-					</panel>
+					<pager name="allergyoptions" alias="ALLERGYOPTIONS" width="100%" height="100%" orientation="vertical" paginate="no">
+						<object class="allergyboxclass" n="Cereals" img="images/icon.wheat.png" allergy="Cereals" actiondata="cereals"/>
+						<object class="allergyboxclass" n="Coconut" img="images/icon.coconut.png" allergy="Coconut" actiondata="coconut"/>
+						<object class="allergyboxclass" n="Peanuts" img="images/icon.peanut.png" allergy="Peanuts" actiondata="peanuts"/>
+						<object class="allergyboxclass" n="Sesame seeds" img="images/icon.sesame.png" allergy="Sesame seeds" actiondata="sesameseeds"/>
+						<object class="allergyboxclass" n="Corn" img="images/icon.corn.png" allergy="Corn" actiondata="corn"/>
+						<object class="allergyboxclass" n="Egg" img="images/icon.egg.png" allergy="Egg" actiondata="egg"/>
+						<object class="allergyboxclass" n="Shellfish" img="images/icon.shell.png" allergy="Shellfish" actiondata="shellfish"/>
+						<object class="allergyboxclass" n="Soybean" img="images/icon.soy.png" allergy="Soybean" actiondata="soybean"/>
+						<object class="allergyboxclass" n="Fish" img="images/icon.fish.png" allergy="Fish" actiondata="fish"/>
+						<object class="allergyboxclass" n="Gluten" img="images/icon.gluten.png" allergy="Gluten" actiondata="gluten"/>
+						<object class="allergyboxclass" n="Sulfites" img="images/icon.sulfites.png" allergy="Sulfites" actiondata="sulfites"/>
+						<object class="allergyboxclass" n="Tree nuts" img="images/icon.treenuts.png" allergy="Tree nuts" actiondata="treenuts"/>
+						<object class="allergyboxclass" n="Milk" img="images/icon.milk.png" allergy="Milk" actiondata="milk"/>
+						<object class="allergyboxclass" n="Wheat" img="images/icon.wheat.png" allergy="Wheat" actiondata="wheat"/>
+					</pager>
 				</panel>
 			</panel>
 		</class>
@@ -117,7 +106,7 @@
 			</panel>
 		</class>
 		<class name="allergy-modal">
-			<panel name="allergy-modal" alias="ALLERGY-MODAL" width="100%" height="100%" align="center" valign="center" clip="yes" cornerradius="5">
+			<panel name="allergy-modal" alias="ALLERGY-MODAL" width="280" height="[param:modalheight]" align="center" valign="center" clip="yes" cornerradius="5">
 				<panel name="alert" alias="ALLERGY-MODAL-ALERT" width="100%" height="100%" background="ffffff">
 					<panel name="toolbar" width="100%" height="44" background="457291">
 						<panel name="wrapper" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
@@ -130,13 +119,13 @@
 							</panel>
 						</panel>
 					</panel>
-					<pager name="contents" alias="ALLERGIESCONTENTS" width="100%" height="150" valign="bottom" orientation="vertical" paginate="no">
+					<pager name="contents" alias="ALLERGIESCONTENTS" width="100%" height="[param:pagerheight]" background="232a46" valign="bottom" orientation="vertical" paginate="no">
 					</pager>
-					<panel name="youcaneat" alias="YOUCANEAT" width="100%" height="150" valign="bottom" padding-left="10" padding-right="10" alpha="0" background="ffffff">
+					<panel name="youcaneat" alias="YOUCANEAT" width="100%" height="[param:pagerheight]" valign="bottom" padding-left="10" padding-right="10" alpha="0" background="ffffff">
 						<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="center" valignment="center" color="#333333" text="You can eat this!" />
 					</panel>
 				</panel>
-				<panel name="ingredients" alias="ALLERGY-MODAL-INGRED" width="100%" height="100%" hidden="yes">
+				<panel name="ingredients" alias="ALLERGY-MODAL-INGRED" width="100%" height="300" hidden="yes">
 					<panel name="toolbar" width="100%" height="44" background="457291">
 						<panel name="wrapper" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
 							<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="fit" maxsize="18" alignment="center" valignment="center" text="[param:name]"></text>
@@ -145,16 +134,16 @@
 							</panel>
 						</panel>
 					</panel>
-					<panel name="contents" width="100%" height="150" valign="bottom" background="ffffff">
-						<panel name="ingred" alias="INGRED" width="100%" height="150" valign="bottom" padding-left="10" padding-right="10" alpha="1" background="ffffff">
-							<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="fit" maxsize="12" alignment="center" valignment="center" color="#333333" text="[param:ingred]" />
+					<panel name="contents" width="100%" height="256" valign="bottom" background="ffffff">
+						<panel name="ingred" alias="INGRED" width="100%" height="100%" valign="bottom" padding-left="10" padding-right="10" alpha="1" background="ffffff">
+							<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="fit" maxsize="16" alignment="center" valignment="center" color="#333333" text="[param:ingred]" />
 						</panel>
 					</panel>
 				</panel>
 			</panel>
 		</class>
 		<class name="allergyitemred">
-			<panel name="[param:item]" width="100%" height="40">
+			<panel name="[param:item]" width="100%" height="30%">
 				<panel name="background" width="100%" height="100%" background="f25a55"></panel> 
 				<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
 					<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="[param:item]" />
@@ -162,7 +151,7 @@
 			</panel>
 		</class>
 		<class name="allergyitemyellow">
-			<panel name="[param:item]" width="100%" height="40">
+			<panel name="[param:item]" width="100%" height="30%">
 				<panel name="background" width="100%" height="100%" background="e7b54a"></panel>
 				<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
 					<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="[param:item]" />
@@ -170,7 +159,7 @@
 			</panel>
 		</class>
 		<class name="allergyitemgray">
-			<panel name="[param:item]" width="100%" height="40">
+			<panel name="[param:item]" width="100%" height="30%">
 				<panel name="background" width="100%" height="100%" background="333333"></panel>
 				<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10">
 					<text name="label" height="100%" width="100%" font="HelveticaNeue-Light" size="18" alignment="left" color="#ffffff" text="You can eat this!" />
@@ -178,7 +167,7 @@
 			</panel>
 		</class>
 		<class name="contacts">
-            <panel alias="CONTACT" height="70" width="100%" background="#20263c">
+            <panel alias="CONTACT" height="70" width="100%" >
             	<panel name="wrapper" width="100%" height="100%" padding-left="10" padding-right="10" onclickup="send-email" _address="[param:email]" _name="[param:first] [param:last]">
             		<panel name="avatar" width="50" height="50" cornerradius="25" clip="yes" valign="center" background="141827">
             			<image name="icon" source="images/icon.user.png" align="center" valign="center"></image>
@@ -378,7 +367,7 @@
 						</panel>
 					</panel>
 				</panel>
-				<panel name="body" alias="BODY" width="100%" height="[eval: [object:BG.height] - [object:TOOLBAR.height]]" valign="bottom" background="00ff00">
+				<panel name="body" alias="BODY" width="100%" height="[eval: [object:BG.height] - [object:TOOLBAR.height]]" valign="bottom">
 					<camera name="scancam" alias="SCANCAM" height="100%" width="100%" type="barcodescan" face="back" onscan="sendscan"></camera>
 				</panel>
 				<panel name="block" alias="BG-BLOCKER" width="100%" height="100%" alpha="0"></panel>
@@ -413,7 +402,7 @@
 			</panel>
 			<!-- share -->
 			<panel name="share" alias="SHARE" width="100%" height="100%" xpos="100%" ypos="34" alpha="0">
-				<panel name="background" width="100%" height="100%" background="20263c"></panel>
+				<panel name="background" width="100%" height="100%"></panel>
 				<panel name="toolbar" width="100%" height="64" background="232a46">
 					<panel name="wrapper" width="100%" height="44" valign="bottom" padding-right="10" padding-left="10">
 						<text name="title" width="80%" height="100%" align="center" color="aeb2b4" font="HelveticaNeue-Light" size="18" alignment="center" valignment="center" text="Send Allergies To:"></text>
@@ -478,17 +467,27 @@
 				</else>
 			</if>
 		</action>
-		<action name="saveallergy">
-			<sync>
-				<if lhs="[preferences:[object:name]]" operator="e" rhs="1">
-					<assign property="preferences:[object:name]" value="" />
-					<alpha value="0" time=".1" target="background" />
-					<else>
-						<assign property="preferences:[object:name]" value="1" />
-						<alpha value=".4" time=".1" target="background" />
-					</else>
-				</if>
-			</sync>
+		<action name="set-allergy">
+			<if lhs="[preferences:[object:name]]" operator="e" rhs="1">
+				<assign property="preferences:[object:name]" value="" />
+				<scale width="10" align="left" time=".2" target="background" />
+				<assign property="object:background.background" value="7d7b93" />
+				<assign property="preferences:[object:name]-severity" value="" />
+				<alpha value=".2" time=".2" target="background" />
+				<else>
+					<assign property="preferences:[object:name]" value="1" />
+					<scale width="100%" align="left" time=".2" target="background" />
+					<alpha value="1" time=".2" target="background" />
+					<assign property="object:background.background" value="f25a55" />
+					<assign property="preferences:[object:name]-severity" value="severe" />
+					<set onclickup="set-severity" />
+				</else>
+			</if>
+		</action>
+		<action name="set-severity">
+			<assign property="object:background.background" value="e7b54a" />
+			<assign property="preferences:[object:name]-severity" value="mild" />
+			<set onclickup="set-allergy" />
 		</action>
 		<action name="display-scanner">
 			<translate xpos="0%" ypos="0" time=".3" target="BG" />
@@ -539,12 +538,35 @@
         </action>
         <action name="allergy-check">
 			<sync>
-				<assign property="var:alCount" value="0"/>
+				<assign property="var:alCount" value="1"/>
 				<assign property="var:allergylevel" value="0" />
 				<assign property="var:productname" value="[js: &quot;[datasource:food-upc-request.1.productsArray[0]/product_name]&quot;.replace('\'',''); ]" />
 				<assign property="var:ingred" value="[datasource:food-upc-request.1.productsArray[0]/ingredients]" />
-				<create class="allergy-modal" target="MAIN" name="[var:productname]" ingred="[var:ingred]"/>
-				<loop lhs="[datasource:food-allergy-list.dataSourceResultCount]" operator="gt" rhs="[var:alCount]">
+								<assign property="var:allergens" value="0" />
+				<loop lhs="[datasource:food-allergy-list.dataSourceResultCount]" operator="gte" rhs="[var:alCount]">
+					<if lhs="[preferences:[datasource:food-allergy-list.[var:alCount].allergen_name]]" operator="e" rhs="1">
+						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_value]" operator="ne" rhs="0">
+							<assign property="var:allergens" value="[eval:[var:allergens]+1]" />
+						</if>
+					</if>
+                    <assign property="var:alCount" value="[eval:[var:alCount]+1]" />
+				</loop>
+				<assign property="var:alCount" value="1"/>
+				<if lhs="[var:allergens]" operator="gte" rhs="4">
+					<assign property="var:modalheight" value="204" />
+				</if>
+				<if lhs="[var:allergens]" operator="e" rhs="3">
+					<assign property="var:modalheight" value="164" />
+				</if>
+				<if lhs="[var:allergens]" operator="e" rhs="2">
+					<assign property="var:modalheight" value="124" />
+				</if>
+				<if lhs="[var:allergens]" operator="lte" rhs="1">
+					<assign property="var:modalheight" value="84" />
+				</if>
+				<create class="allergy-modal" target="MAIN" name="[var:productname]" ingred="[var:ingred]" modalheight="[var:modalheight]" pagerheight="[eval:[var:modalheight]-44]"/>
+				<loop lhs="[datasource:food-allergy-list.dataSourceResultCount]" operator="gte" rhs="[var:alCount]">
+
 					<if lhs="[preferences:[datasource:food-allergy-list.[var:alCount].allergen_name]]" operator="e" rhs="1">
 						<if lhs="[datasource:food-allergy-list.[var:alCount].allergen_value]" operator="e" rhs="2">
 							<create class="allergyitemred" target="ALLERGIESCONTENTS" item="[datasource:food-allergy-list.[var:alCount].allergen_name]"/>
@@ -796,9 +818,11 @@
 		<action name="toggle-ingredients">
 			<if lhs="[var:allergy-modal-ingred]" operator="!=" rhs="1">
 				<replace type="flipleft" replacement="ALLERGY-MODAL-INGRED" target="ALLERGY-MODAL-ALERT" time=".25" />
+                <scale time=".25" height="300" valign="center" target="ALLERGY-MODAL" />
 				<assign property="var:allergy-modal-ingred" value="1" />
 				<else>
 					<replace type="flipright" replacement="ALLERGY-MODAL-ALERT" target="ALLERGY-MODAL-INGRED" time=".25" />
+                    <scale time=".25" height="[var:modalheight]" valign="center" target="ALLERGY-MODAL" />
 					<assign property="var:allergy-modal-ingred" value="0" />
 				</else>
 			</if>
